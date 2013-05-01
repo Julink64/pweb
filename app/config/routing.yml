@@ -1,4 +1,4 @@
-sdz_blog:
-    resource: "@SdzBlogBundle/Resources/config/routing.yml"
-    prefix:   /blog
+pweb_main:
+    resource: "@PwebMainBundle/Resources/config/routing.yml"
+    prefix:   /
 

@@ -1,0 +1,14 @@
+{% extends "PwebMainBundle::layout.html.twig" %}
+ 
+{% block title %}
+  Panier
+{% endblock %}
+ 
+{% block PwebMain_body %}
+ 
+  <h2>Mon panier</h2>
+  <br></br>
+  <p>Le panier est vide.</p>
+  <h3><a href="{{ path('PwebMain_accueil') }}">Continuer vos achats</a></h3>
+  
+{% endblock %}

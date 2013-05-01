@@ -1,0 +1,24 @@
+{# src/Pweb/MainBundle/Resources/views/Main/modifier.html.twig #}
+ 
+{% extends "PwebMainBundle::layout.html.twig" %}
+ 
+{% block title %}
+  Supprimer un article
+{% endblock %}
+ 
+{% block PwebMain_body %}
+ 
+  <h2>Supprimer un produit</h2>
+ 
+  <p>
+    Vous avez supprimé ce produit.
+  </p>
+ 
+  <p>
+    <a href="{{ path('PwebMain_accueil', {'id': article.id}) }}" class="btn">
+      <i class="icon-chevron-left"></i>
+      Retour au Main
+    </a>
+  </p>
+ 
+{% endblock %}

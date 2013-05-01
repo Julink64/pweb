@@ -1,0 +1,27 @@
+  {# src/Pweb/MainBundle/Resources/views/Main/ajouter.html.twig #}
+ 
+{% extends "PwebMainBundle::layout.html.twig" %}
+ 
+{% block title %}
+  Ajouter un produit
+{% endblock %}
+ 
+{% block PwebMain_body %}
+ 
+  <h2>Ajouter un produit</h2>
+ 
+  {% include "PwebMainBundle:Main:formulaire.html.twig" %}
+ 
+  <p>
+     Attention : ce produit sera ajouté directement
+     sur la page d'accueil après validation du formulaire.
+  </p>
+ 
+  <p>
+    <a href="{{ path('PwebMain_accueil') }}" class="btn">
+      <i class="icon-chevron-left"></i>
+      Retour au Main
+    </a>
+  </p>
+ 
+{% endblock %}

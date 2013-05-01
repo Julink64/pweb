@@ -1,0 +1,57 @@
+# ------------------------------------------------------------------------------
+# ACCUEIL
+
+PwebMain_accueil:
+    path:      /
+    defaults:  { _controller: PwebMainBundle:Main:index, page: 1 }
+
+# ------------------------------------------------------------------------------
+# VOIR ARTICLE
+
+PwebMain_voir:
+    path:      /article/{id}
+    defaults:  { _controller: PwebMainBundle:Main:voir }
+     
+PwebMain_voir_slug:
+    path:      /{annee}/{slug}.{format}
+    defaults:  { _controller: PwebMainBundle:Main:voirSlug, format: html }
+    requirements:
+        annee:  \d{4}
+        format: html|xml
+
+# ------------------------------------------------------------------------------
+# AJOUTER, MODIFIER, SUPPRIMMER
+        
+PwebMain_ajouter:
+    path:      /ajouter
+    defaults:  { _controller: PwebMainBundle:Main:ajouter }
+ 
+PwebMain_modifier:
+    path:      /modifier/{id}
+    defaults:  { _controller: PwebMainBundle:Main:modifier }
+    requirements:
+        id:  \d+
+ 
+PwebMain_supprimer:
+    path:      /supprimer/{id}
+    defaults:  { _controller: PwebMainBundle:Main:supprimer }
+    requirements:
+        id:  \d+
+
+# ------------------------------------------------------------------------------
+# REINITIALISER
+
+PwebMain_reinitialiser:
+    path:      /reinitialiser
+    defaults:  { _controller: PwebMainBundle:Main:reinitialiser }
+
+# ------------------------------------------------------------------------------
+# ESPACE CLIENT
+
+PwebMain_espaceclient:
+    path:      /espaceclient
+    defaults:  { _controller: PwebMainBundle:Main:espaceclient }
+
+PwebMain_panier:
+    path:      /panier
+    defaults:  { _controller: PwebMainBundle:Main:panier }
