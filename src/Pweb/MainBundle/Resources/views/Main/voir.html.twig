@@ -7,15 +7,19 @@
 {% block PwebMain_body %}
  
   <h2>{{ produit.libelle }}</h2>
-    
+    <br></br>
 {% if produit.photo is not null %}  
+    <a href="{{ produit.photo }}">
     <p align="center"><img src="{{ produit.photo }}" width="330" height="330" alt="Produit" align="center"/></p>
+    </a>
 {% endif %}
 
 <br></br>
   <div class="well">
     {{ produit.description }}
   </div>
+<p align="center"><center><h2>{{ produit.prix }} € seulement !</h2></center>
+<p align="center"><img src="http://localhost/Symfony/web/Produits/prix-choc.gif" width="90" height="90" alt="Prix choc" align="center"/></p>
   <p>
     <a href="{{ path('PwebMain_accueil') }}" class="btn">
       <i class="icon-chevron-left"></i>
@@ -29,22 +33,16 @@
       <i class="icon-trash"></i>
       Supprimer le produit
     </a>
-    <a href="{{ path('PwebMain_accueil') }}" class="btn btn-primary btn-large">
-      Ajouter au panier
-      <i class="icon-chevron-right"></i>
-    </a>
+<a href="{{ path('PwebMain_panier') }}" class="btn btn-primary btn-large"><i class="icon-white icon-check"></i> Ajouter au panier</a> 
   </p>
-  
-  
-  
   
   
   <p>Libellé : {{ produit.libelle }}</p>
   <p>Description : {{ produit.description }}</p>
   <p>Catégorie : {{ produit.categorie }}</p>
-  <p>Prix : {{ produit.prix }}</p>
-  <p>Poids : {{ produit.poids }}</p>
-  <p>Photo : {{ produit.photo }}</p>
-  <p>Lien (optionnel d'après le sujet) : <a href="{{ produit.lien }}"> {{ produit.lien }} </a></p>
+  <p>Prix : {{ produit.prix }} €</p>
+  <p>Poids : {{ produit.poids }} g</p>
+  <p>Photo : <a href="{{ produit.photo }}"> Voir cet article de plus près </a></p>
+  <p>Lien : <a href="{{ produit.lien }}"> Lien vers le fournisseur officiel </a></p>
 
 {% endblock %}

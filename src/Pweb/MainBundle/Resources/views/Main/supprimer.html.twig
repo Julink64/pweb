@@ -3,22 +3,30 @@
 {% extends "PwebMainBundle::layout.html.twig" %}
  
 {% block title %}
-  Supprimer un article
+  Supprimer le produit
 {% endblock %}
  
 {% block PwebMain_body %}
  
-  <h2>Supprimer un produit</h2>
- 
-  <p>
-    Vous avez supprimé ce produit.
-  </p>
- 
-  <p>
-    <a href="{{ path('PwebMain_accueil', {'id': article.id}) }}" class="btn">
-      <i class="icon-chevron-left"></i>
-      Retour au Main
+  <h2>Désirez vous supprimer ce produit ?</h2>
+ <br></br>
+    <a href="{{ produit.photo }}">
+    <p align="center"><img src="{{ produit.photo }}" width="330" height="330" alt="Produit" align="center"/></p>
     </a>
+    <center><h3>{{ produit.libelle }}</h3></center>
+<br></br>
+<p>Votre stock pèsera <strong>{{ produit.poids }} grammes</strong> en moins.</p>
+<p>Êtes vous sùr de vouloir vous délester de ce produit ?</p>
+  <br></br>
+  <center>
+  <p>
+    <a href="{{ path('PwebMain_accueil', {'id': produit.id}) }}" class="btn btn-inverse btn-small">
+      <i class="icon-chevron-left"></i>
+      Retour à la liste des articles
+    </a>
+<a href="{{ path('PwebMain_supprimer', {'id': produit.id}) }}" class="btn btn-danger btn-large">
+    <i class="icon-white icon-warning-sign"></i> Confirmer la suppression !</a>
   </p>
+  </center>
  
 {% endblock %}

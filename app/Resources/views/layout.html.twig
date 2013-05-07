@@ -14,8 +14,7 @@
       <div id="header" class="hero-unit">
         <h1>Outil de vente en ligne</h1>
         <p>Application Symfony 2 : Outil de vente en ligne</p>
-        <p><a class="btn btn-info btn-small" href="{{ path('PwebMain_espaceclient') }}">
-          Se connecter »</a></p>
+<a href="{{ path('PwebMain_espaceclient') }}" class="btn btn-success btn-large"><i class="icon-white icon-resize-small"></i> Se connecter</a>
        </div>
         
                                         <!--
@@ -27,21 +26,14 @@
             
       <div class="row">
     <div id="menu" class="span3">
-        <a href="{{ path('PwebMain_panier') }}" class="btn btn-success btn-small">
-        <i class="icon-chevron-right"></i>
-          Mon panier
-        </a>
+        <a href="{{ path('PwebMain_panier') }}" class="btn btn-primary btn-small"><i class="icon-white icon-user"></i> Mon panier</a>
         <br></br>
-        <a href="{{ path('PwebMain_espaceclient') }}" class="btn btn-inverse btn-small">
-        <i class="icon-chevron-right"></i>
-          Espace client
-        </a>
-
+<a href="{{ path('PwebMain_espaceclient') }}" class="btn btn-success btn-small"><i class="icon-white icon-briefcase"></i> Espace client</a>
             <h3>Le site</h3>
           <ul class="nav nav-pills nav-stacked">
             <li><a href="{{ path('PwebMain_accueil') }}">Accueil</a></li>
-            <li><a href="{{ path('PwebMain_ajouter') }}">Ajouter un produit</a></li>
-            <li><a href="{{ path('PwebMain_reinitialiser') }}">Ajouter les produits par défaut</a></li>
+            <li><a href="{{ path('PwebMain_ajouter') }}">Ajouter un produit (BigMac)</a></li>
+            <li><a href="{{ path('PwebMain_reinitialiser') }}">Ajouter les produits et catégories par défaut</a></li>
           </ul>
                      
           {{ render(controller("PwebMainBundle:Main:menu", {'nombre': 3})) }}

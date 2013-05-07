@@ -6,15 +6,18 @@
  
 {% block PwebMain_body %}
  
-  <h2>Liste des produits</h2>
+  <h2>Liste des 15 derniers produits</h2>
  <br></br>
   <ul>
-    {% for article in articles %}
+    {% for produit in produit %}
       <li>
-        <a href="{{ path('PwebMain_voir', {'id': article.id}) }}">{{ article.titre }}</a>
-        par {{ article.auteur }},
-        le {{ article.date|date('d/m/Y') }}
+        <a href="{{ path('PwebMain_voir', {'id': produit.id}) }}">{{ produit.libelle }}</a>
+        disponible à partir de <strong>{{ produit.prix }} €</strong> seulement.<br></br>
+          <a href="{{ path('PwebMain_voir', {'id': produit.id}) }}">
+    <p align="center"><img src="{{ produit.photo }}" width="200" height="200" alt="Produit" align="center"/></p>
+    </a>
       </li>
+      
     {% else %}
       <li>Pas (encore !) de produits</li>
     {% endfor %}

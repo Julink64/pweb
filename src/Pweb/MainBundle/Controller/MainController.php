@@ -16,57 +16,20 @@ class MainController extends Controller
 {
   public function indexAction($page)
   {
-      /*
-       *   public function indexAction($page)
-  {
-    if( $page < 1 )
-        {      throw $this->createNotFoundException('Page inexistante (page = '.$page.')');    }
-        
-    $repository = $this->getDoctrine()
-               ->getManager()
-               ->getRepository('PwebMainBundle:Article');
-  
-    $article = $repository->findAll();
-  
-  if($article === null)
-  {
-    throw $this->createNotFoundException('Aucun article n\'est présent. Utiliser l\'option réinitialiser pour ajouter les articles par défault.');
-  }
-
-  return $this->render('PwebMainBundle:Main:voir.html.twig', array('article' => $article));
-  }
-       */
+$nombre=15;
+    $produit = $this->getDoctrine()
+                  ->getManager()
+                  ->getRepository('PwebMainBundle:Produit')
+                  ->findBy(
+                    array(),          // Pas de critère
+                    array('id' => 'desc'), // On trie par date décroissante
+                    $nombre,         // On sélectionne $nombre articles
+                    0                // À partir du premier
+                  );
       
       
-      
-    if( $page < 1 )
-        {      throw $this->createNotFoundException('Page inexistante (page = '.$page.')');    }
-
-  // Les articles :
-  $articles = array(
-    array(
-      'titre'   => 'Iphone 5S',
-      'id'      => 1,
-      'auteur'  => 'Tim Cook',
-      'contenu' => 'D’après 2 clichés fuités sur la toile, l\'Iphone 5S disposerait d’un design revu, corrigé, et désormais courbé.',
-      'date'    => new \Datetime()),
-    array(
-      'titre'   => 'Galaxy S4',
-      'id'      => 2,
-      'auteur' => 'Claude Fouquet',
-      'contenu' => 'Le smartphone serait doté d\'un écran 5 pouces 1080p d\'une densité de 440 points par pouce avec le un SoC Exynos quadruple coeur 2 GHz (ou peut-être même l\'Exynos 5 octuple coeurs), 2 Go de RAM et un capteur photo de 13 megapixels.',
-      'date'    => new \Datetime()),
-    array(
-      'titre'   => 'Porsche CAYENNE DIESEL V6',
-      'id'      => 3,
-      'auteur' => 'Automobile.fr',
-      'contenu' => 'Toit panoramique, Rampes de pavillon avec barrettes de protection en AluDesign mat, Hayon automatique, Caméra de recul incluant l\' assistance parking AV/AR, Phares Bi xénon avec Porsche Dynamic Light System (PDLS);',
-      'date'    => new \Datetime())
-  );
-     
-  // Puis modifiez la ligne du render comme ceci, pour prendre en compte nos articles :
-  return $this->render('PwebMainBundle:Main:index.html.twig', array(
-    'articles' => $articles
+      return $this->render('PwebMainBundle:Main:index.html.twig', array(
+    'produit' => $produit
   ));
   }
   
@@ -84,13 +47,6 @@ public function voirAction($id)
       throw $this->createNotFoundException('Produit[id='.$id.'] inexistant.');
     }
     
-/*
-    return $this->render('PwebMainBundle:Main:voir.html.twig', array(
-      'article'        => $article,
-      'liste_commentaires' => $liste_commentaires
-    ));
- */
-
     return $this->render('PwebMainBundle:Main:voir.html.twig', array(
       'produit'        => $produit));
 }
@@ -105,7 +61,7 @@ public function voirAction($id)
     $produit->setPrix('6.05');
     $produit->setPoids('180');
     $produit->setPhoto('http://localhost/Symfony/web/Produits/BigMac.png');
-    $produit->setLien('fr.wikipedia.org/wiki/Big_Mac‎');
+    $produit->setLien('http://fr.wikipedia.org/wiki/Big_Mac‎');
 
     $em = $this->getDoctrine()->getManager();
     $em->persist($produit);
@@ -123,78 +79,61 @@ public function voirAction($id)
 // Ajout d'un article existant à plusieurs catégories existantes :
   public function modifierAction($id)
   {
-    // On récupère l'EntityManager
     $em = $this->getDoctrine()
                ->getManager();
- 
-    // On récupère l'entité correspondant à l'id $id
-    $article = $em->getRepository('PwebMainBundle:Article')
+
+    $produit = $em->getRepository('PwebMainBundle:Produit')
                   ->find($id);
  
-    if ($article === null) {
-      throw $this->createNotFoundException('Article[id='.$id.'] inexistant.');
+        if($produit === null)
+    {
+      throw $this->createNotFoundException('Produit[id='.$id.'] inexistant.');
     }
- 
+    
     return $this->render('PwebMainBundle:Main:modifier.html.twig', array(
-      'article' => $article
-    ));
+      'produit'        => $produit));
   }
   
-// Suppression des catégories d'un article :
   public function supprimerAction($id)
   {
-    // On récupère l'EntityManager
     $em = $this->getDoctrine()
                ->getManager();
  
-    // On récupère l'entité correspondant à l'id $id
-    $article = $em->getRepository('PwebMainBundle:Article')
+    $produit = $em->getRepository('PwebMainBundle:Produit')
                   ->find($id);
- 
-    if ($article === null) {
+    if ($produit === null) {
       throw $this->createNotFoundException('Article[id='.$id.'] inexistant.');
     }
-     
-    // On récupère toutes les catégories :
     $liste_categories = $em->getRepository('PwebMainBundle:Categorie')
                            ->findAll();
-     
-    // On enlève toutes ces catégories de l'article
     foreach($liste_categories as $categorie)
     {
-      // On fait appel à la méthode removeCategorie() dont on a parlé plus haut
-      // Attention ici, $categorie est bien une instance de Categorie, et pas seulement un id
-      $article->removeCategorie($categorie);
+      $produit->removeCategorie($categorie);
     }
- 
-    // On n'a pas modifié les catégories : inutile de les persister
-     
-    // On a modifié la relation Article - Categorie
-    // Il faudrait persister l'entité propriétaire pour persister la relation
-    // Or l'article a été récupéré depuis Doctrine, inutile de le persister
-   
-    // On déclenche la modification
-    $em->flush();
- 
-    return new Response('OK');
+    
+        if($produit === null)
+    {      throw $this->createNotFoundException('Produit[id='.$id.'] inexistant.');    }
+    return $this->render('PwebMainBundle:Main:supprimer.html.twig', array(
+      'produit'        => $produit));
   }
 
   
-  public function menuAction($nombre) // Ici, nouvel argument $nombre, on l'a transmis via le render() depuis la vue
+public function menuAction($nombre)
   {
-    // On fixe en dur une liste ici, bien entendu par la suite on la récupérera depuis la BDD !
-    // On pourra récupérer $nombre articles depuis la BDD,
-    // avec $nombre un paramètre qu'on peut changer lorsqu'on appelle cette action
-    $liste = array(
-      array('id' => 1, 'titre' => 'Iphone 5S'),
-      array('id' => 2, 'titre' => 'Galaxy S4'),
-      array('id' => 3, 'titre' => 'Porsche CAYENNE DIESEL V6')
-    );
-     
+    $nombre=10;
+    $liste = $this->getDoctrine()
+                  ->getManager()
+                  ->getRepository('PwebMainBundle:Produit')
+                  ->findBy(
+                    array(),          // Pas de critère
+                    array('id' => 'desc'), // On trie par date décroissante
+                    $nombre,         // On sélectionne $nombre articles
+                    0                // À partir du premier
+                  );
+ 
     return $this->render('PwebMainBundle:Main:menu.html.twig', array(
       'liste_articles' => $liste // C'est ici tout l'intérêt : le contrôleur passe les variables nécessaires au template !
     ));
-    $doctrine = $this->getDoctrine()->getManager()->getRepository('PwebMainBundle:Article');
   }
   
   public function modifierImageAction($id_article)
@@ -210,17 +149,20 @@ public function voirAction($id)
     public function reinitialiserAction()
   {
     $em=$this->getDoctrine()->getManager();
-    
-    $article1 = new Produit();
-    $article1->setLibelle('Iphone 6');
-    $article1->setDescription('D’ici quelques semaines, Apple dévoilera enfin son nouveau smartphone au sujet duquel on ne sait pour le moment presque rien, voire rien du tout. Une chose cependant est certaine, iOS7 sera de la partie et proposera de nombreuses nouveautés pour améliorer l’expérience utilisateur.');
-    $article1->setCategorie('1');
-    $article1->setPrix('654.45');
-    $article1->setPoids('107');
-    $article1->setPhoto('http://localhost/Symfony/web/Produits/iPhone-6.png');
-    $article1->setLien('http://www.terrafemina.com/culture/culture-web/articles/25462-iphone-6-ou-iphone-5s-le-plein-de-nouveautes-pour-ios7.html');
-    $em->persist($article1);
 
+// Fonction qui vide toute la base de donnée : missing
+    
+// Produits
+    $article1 = new Produit();
+    $article1->setLibelle('BigMac');
+    $article1->setDescription('Le Big Mac est un hamburger vendu par la chaîne de restauration rapide McDonald\'s depuis 1968. Il a apparemment été inspiré par un hamburger similaire à deux étages vendu par la chaîne Big Boy depuis 1936.');
+    $article1->setCategorie('3');
+    $article1->setPrix('6.05');
+    $article1->setPoids('180');
+    $article1->setPhoto('http://localhost/Symfony/web/Produits/BigMac.png');
+    $article1->setLien('http://fr.wikipedia.org/wiki/Big_Mac‎');
+    $em->persist($article1);
+    
     $article2 = new Produit();
     $article2->setLibelle('Galaxy S4');
     $article2->setDescription('Le smartphone serait doté d\'un écran 5 pouces 1080p d\'une densité de 440 points par pouce avec le un SoC Exynos quadruple coeur 2 GHz (ou peut-être même l\'Exynos 5 octuple coeurs), 2 Go de RAM et un capteur photo de 13 megapixels.');
@@ -242,14 +184,24 @@ public function voirAction($id)
     $em->persist($article3);
     
     $article4 = new Produit();
-    $article4->setLibelle('BigMac');
-    $article4->setDescription('Le Big Mac est un hamburger vendu par la chaîne de restauration rapide McDonald\'s depuis 1968. Il a apparemment été inspiré par un hamburger similaire à deux étages vendu par la chaîne Big Boy depuis 1936.');
+    $article4->setLibelle('Iphone 6');
+    $article4->setDescription('D’ici quelques semaines, Apple dévoilera enfin son nouveau smartphone au sujet duquel on ne sait pour le moment presque rien, voire rien du tout. Une chose cependant est certaine, iOS7 sera de la partie et proposera de nombreuses nouveautés pour améliorer l’expérience utilisateur.');
     $article4->setCategorie('1');
-    $article4->setPrix('6.05');
-    $article4->setPoids('180');
-    $article4->setPhoto('http://localhost/Symfony/web/Produits/BigMac.png');
-    $article4->setLien('fr.wikipedia.org/wiki/Big_Mac‎');
+    $article4->setPrix('654.45');
+    $article4->setPoids('107');
+    $article4->setPhoto('http://localhost/Symfony/web/Produits/iPhone-6.png');
+    $article4->setLien('http://www.terrafemina.com/culture/culture-web/articles/25462-iphone-6-ou-iphone-5s-le-plein-de-nouveautes-pour-ios7.html');
     $em->persist($article4);
+
+// Categories
+    $categorie1 = new Categorie();
+    $categorie1->setLibelleCategorie('Smartphones');
+    
+    $categorie2 = new Categorie();
+    $categorie2->setLibelleCategorie('Voitures');
+    
+    $categorie3 = new Categorie();
+    $categorie3->setLibelleCategorie('Restauration');
     
     $em->flush();
     return $this->render('PwebMainBundle:Main:renitialisation.html.twig');

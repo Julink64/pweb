@@ -3,27 +3,38 @@
 {% extends "PwebMainBundle::layout.html.twig" %}
  
 {% block title %}
-  Modifier un produit
+  Modifier le produit
 {% endblock %}
  
 {% block PwebMain_body %}
  
-  <h2>Modifier un produit</h2>
- 
-  {% include "PwebMainBundle:Main:formulaire.html.twig" %}
- 
+  <h2>Vous modifiez le produit :</h2>
+ <br></br>
+    <a href="{{ produit.photo }}">
+    <p align="center"><img src="{{ produit.photo }}" width="330" height="330" alt="Produit" align="center"/></p>
+    </a>
+    <center><h3>{{ produit.libelle }}</h3></center>
+<br></br>
   <p>
     Vous éditez un produit déjà existant,
     ne le changez pas trop pour éviter
     aux membres de ne pas comprendre
     ce qu'il se passe.
   </p>
- 
+  <br></br>
+
+  {% include "PwebMainBundle:Main:formulaire.html.twig" %}
+    <center>
   <p>
-    <a href="{{ path('PwebMain_voir', {'id': article.id}) }}" class="btn">
+    <a href="{{ path('PwebMain_accueil', {'id': produit.id}) }}" class="btn btn-inverse btn-small">
       <i class="icon-chevron-left"></i>
-      Retour au produit
+      Retour à la liste des articles
     </a>
+<a href="{{ path('PwebMain_modifier', {'id': produit.id}) }}" class="btn btn-info btn-large"><i class="icon-white icon-ok"></i> Enregistrer les modifications</a>
   </p>
+    </center>
  
 {% endblock %}
+  
+  
+  
