@@ -5,7 +5,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Pweb\MainBundle\Entity\Article;
 use Pweb\MainBundle\Entity\Image;
- 
+
+use Pweb\MainBundle\Entity\Produit;
+use Pweb\MainBundle\Entity\Categorie;
+use Pweb\MainBundle\Entity\Acheteur;
+use Pweb\MainBundle\Entity\Commande;
+
+
 class MainController extends Controller
 {
   public function indexAction($page)
@@ -70,66 +76,47 @@ public function voirAction($id)
     $em = $this->getDoctrine()
                ->getManager();
  
-    // On récupère l'entité correspondant à l'id $id
-    $article = $em->getRepository('PwebMainBundle:Article')
-                  ->find($id);
+    $produit = $em->getRepository('PwebMainBundle:Produit')
+              ->find($id);
 
-    if($article === null)
+        if($produit === null)
     {
-      throw $this->createNotFoundException('Article[id='.$id.'] inexistant.');
+      throw $this->createNotFoundException('Produit[id='.$id.'] inexistant.');
     }
- 
-    // On récupère la liste des commentaires
-    $liste_commentaires = $em->getRepository('PwebMainBundle:Commentaire')
-                             ->findAll();
- 
-    // Puis modifiez la ligne du render comme ceci, pour prendre en compte l'article :
+    
+/*
     return $this->render('PwebMainBundle:Main:voir.html.twig', array(
       'article'        => $article,
       'liste_commentaires' => $liste_commentaires
     ));
-  }
-     
+ */
+
+    return $this->render('PwebMainBundle:Main:voir.html.twig', array(
+      'produit'        => $produit));
+}
+
   public function ajouterAction()
   {
-    // Création de l'entité Article
-    $article = new Article();
-    $article->setTitre('Mon dernier weekend');
-    $article->setContenu("C'était vraiment super et on s'est bien amusé.");
-    $article->setAuteur('winzou');
- /*
-    // Création d'un premier commentaire
-    $commentaire1 = new Commentaire();
-    $commentaire1->setAuteur('winzou');
-    $commentaire1->setContenu('On veut les photos !');
- 
-    // Création d'un deuxième commentaire, par exemple
-    $commentaire2 = new Commentaire();
-    $commentaire2->setAuteur('Choupy');
-    $commentaire2->setContenu('Les photos arrivent !');
- 
-    // On lie les commentaires à l'article
-    $commentaire1->setArticle($article);
-    $commentaire2->setArticle($article);
- 
-    // On récupère l'EntityManager
+// A la place du BigMac : mettre un formulaire d'enregistrement des produits.
+    $produit = new Produit();
+    $produit->setLibelle('BigMac');
+    $produit->setDescription('Le Big Mac est un hamburger vendu par la chaîne de restauration rapide McDonald\'s depuis 1968. Il a apparemment été inspiré par un hamburger similaire à deux étages vendu par la chaîne Big Boy depuis 1936.');
+    $produit->setCategorie('0');
+    $produit->setPrix('6.05');
+    $produit->setPoids('180');
+    $produit->setPhoto('http://localhost/Symfony/web/Produits/BigMac.png');
+    $produit->setLien('fr.wikipedia.org/wiki/Big_Mac‎');
+
     $em = $this->getDoctrine()->getManager();
- 
-    // Étape 1 : On persiste les entités
-    $em->persist($article);
-    // Pour cette relation pas de cascade, car elle est définie dans l'entité Commentaire et non Article
-    // On doit donc tout persister à la main ici
-    $em->persist($commentaire1);
-    $em->persist($commentaire2);
- 
-    // Étape 2 : On déclenche l'enregistrement
+    $em->persist($produit);
     $em->flush();
-  */
-    // Reste de la méthode qu'on avait déjà écrit
+
+// Reste de la méthode qu'on avait déjà écrit
     if ($this->getRequest()->getMethod() == 'POST') {
       $this->get('session')->getFlashBag()->add('info', 'Article bien enregistré');
-      return $this->redirect( $this->generateUrl('PwebMain_voir', array('id' => $article->getId())) );
+      return $this->redirect( $this->generateUrl('PwebMain_voir', array('id' => $produit->getId())) );
     }
+ 
     return $this->render('PwebMainBundle:Main:ajouter.html.twig');
   }
 
@@ -148,22 +135,6 @@ public function voirAction($id)
       throw $this->createNotFoundException('Article[id='.$id.'] inexistant.');
     }
  
-    // On récupère toutes les catégories :
-    /*$liste_categories = $em->getRepository('PwebMainBundle:Categorie')
-                           ->findAll();
- */
-    // On boucle sur les catégories pour les lier à l'article
-    /*foreach($liste_categories as $categorie)
-    {
-      $article->addCategorie($categorie);
-    }
- */
-    // Inutile de persister l'article, on l'a récupéré avec Doctrine
- 
-    // Étape 2 : On déclenche l'enregistrement
-    //$em->flush();
-         
-    // Puis modifiez la ligne du render comme ceci, pour prendre en compte l'article :
     return $this->render('PwebMainBundle:Main:modifier.html.twig', array(
       'article' => $article
     ));
@@ -238,35 +209,49 @@ public function voirAction($id)
   
     public function reinitialiserAction()
   {
-    $em=$this->getDoctrine()->getManager();/*
-    $liste_articles = $em->getRepository('PwebMainBundle:Article')
-                           ->findAll();
+    $em=$this->getDoctrine()->getManager();
     
-    foreach($liste_categories as $article)
-    {
-      $em->remove($article);
-    }
-*/
-    $article1 = new Article();
-    $article1->setTitre('Iphone 5S');
-    $article1->setAuteur('Tim Cook');
-    $article1->setContenu("D’après 2 clichés fuités sur la toile, l'Iphone 5S disposerait d’un design revu, corrigé, et désormais courbé.");
+    $article1 = new Produit();
+    $article1->setLibelle('Iphone 6');
+    $article1->setDescription('D’ici quelques semaines, Apple dévoilera enfin son nouveau smartphone au sujet duquel on ne sait pour le moment presque rien, voire rien du tout. Une chose cependant est certaine, iOS7 sera de la partie et proposera de nombreuses nouveautés pour améliorer l’expérience utilisateur.');
+    $article1->setCategorie('1');
+    $article1->setPrix('654.45');
+    $article1->setPoids('107');
+    $article1->setPhoto('http://localhost/Symfony/web/Produits/iPhone-6.png');
+    $article1->setLien('http://www.terrafemina.com/culture/culture-web/articles/25462-iphone-6-ou-iphone-5s-le-plein-de-nouveautes-pour-ios7.html');
     $em->persist($article1);
-    
-    $article2 = new Article();
-    $article2->setTitre('Galaxy S4');
-    $article2->setAuteur('Claude Fouquet');
-    $article2->setContenu("Le smartphone serait doté d'un écran 5 pouces 1080p d'une densité de 440 points par pouce avec le un SoC Exynos quadruple coeur 2 GHz (ou peut-être même l'Exynos 5 octuple coeurs), 2 Go de RAM et un capteur photo de 13 megapixels.");
+
+    $article2 = new Produit();
+    $article2->setLibelle('Galaxy S4');
+    $article2->setDescription('Le smartphone serait doté d\'un écran 5 pouces 1080p d\'une densité de 440 points par pouce avec le un SoC Exynos quadruple coeur 2 GHz (ou peut-être même l\'Exynos 5 octuple coeurs), 2 Go de RAM et un capteur photo de 13 megapixels.');
+    $article2->setCategorie('1');
+    $article2->setPrix('634.14');
+    $article2->setPoids('110');
+    $article2->setPhoto('http://localhost/Symfony/web/Produits/GalaxyS4.jpg');
+    $article2->setLien('http://www.galaxys4.fr');
     $em->persist($article2);
-    
-    $article3 = new Article();
-    $article3->setTitre('Porsche CAYENNE DIESEL V6');
-    $article3->setAuteur('Automobile.fr');
-    $article3->setContenu("Toit panoramique, Rampes de pavillon avec barrettes de protection en AluDesign mat, Hayon automatique, Caméra de recul incluant l' assistance parking AV/AR, Phares Bi xénon avec Porsche Dynamic Light System (PDLS).");
+
+    $article3 = new Produit();
+    $article3->setLibelle('Porsche Cayenne Diesel V6');
+    $article3->setDescription('Toit panoramique, Rampes de pavillon avec barrettes de protection en AluDesign mat, Hayon automatique, Caméra de recul incluant l\' assistance parking AV/AR, Phares Bi xénon avec Porsche Dynamic Light System (PDLS).');
+    $article3->setCategorie('2');
+    $article3->setPrix('97405.34');
+    $article3->setPoids('2467943');
+    $article3->setPhoto('http://localhost/Symfony/web/Produits/Porsche.jpg');
+    $article3->setLien('http://www.porsche.com/france/');
     $em->persist($article3);
     
-    $em->flush();
+    $article4 = new Produit();
+    $article4->setLibelle('BigMac');
+    $article4->setDescription('Le Big Mac est un hamburger vendu par la chaîne de restauration rapide McDonald\'s depuis 1968. Il a apparemment été inspiré par un hamburger similaire à deux étages vendu par la chaîne Big Boy depuis 1936.');
+    $article4->setCategorie('1');
+    $article4->setPrix('6.05');
+    $article4->setPoids('180');
+    $article4->setPhoto('http://localhost/Symfony/web/Produits/BigMac.png');
+    $article4->setLien('fr.wikipedia.org/wiki/Big_Mac‎');
+    $em->persist($article4);
     
+    $em->flush();
     return $this->render('PwebMainBundle:Main:renitialisation.html.twig');
   }
   

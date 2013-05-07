@@ -24,9 +24,16 @@ class Produit
     /**
      * @var string
      *
-     * @ORM\Column(name="libelle", type="text")
+     * @ORM\Column(name="libelle", type="string", length=50)
      */
     private $libelle;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text")
+     */
+    private $description;
 
     /**
      * @var integer
@@ -52,7 +59,7 @@ class Produit
     /**
      * @var string
      *
-     * @ORM\Column(name="photo", type="blob")
+     * @ORM\Column(name="photo", type="text")
      */
     private $photo;
 
@@ -95,6 +102,29 @@ class Produit
     public function getLibelle()
     {
         return $this->libelle;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return Produit
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string 
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     /**

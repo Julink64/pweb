@@ -2,4 +2,4 @@ _assetic:
     resource: .
     type: assetic
 _app:
-    resource: /Users/clementc/Sites/Symfony_projet/PWEB_git/pweb/app/config/routing_dev.yml
+    resource: /var/www/Symfony/app/config/routing_dev.yml

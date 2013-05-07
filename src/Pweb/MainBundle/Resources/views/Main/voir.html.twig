@@ -1,40 +1,50 @@
-{# src/Pweb/MainBundle/Resources/views/Main/voir.html.twig #}
- 
 {% extends "PwebMainBundle::layout.html.twig" %}
- 
+
 {% block title %}
     Produits
 {% endblock %}
- 
+
 {% block PwebMain_body %}
  
-  <h2>
-  {# On vérifie qu'une image soit bien associée à l'article #}
-  {% if article.image is not null %}
-    <img src="{{ article.image.url }}" alt="{{ article.image.alt }}" />
-  {% endif %}
- 
-    {{ article.titre }}
-  </h2>
-  <i>Par {{ article.auteur }}, le {{ article.date|date('d/m/Y') }}</i>
- 
+  <h2>{{ produit.libelle }}</h2>
+    
+{% if produit.photo is not null %}  
+    <p align="center"><img src="{{ produit.photo }}" width="330" height="330" alt="Produit" align="center"/></p>
+{% endif %}
+
+<br></br>
   <div class="well">
-    {{ article.contenu }}
+    {{ produit.description }}
   </div>
- 
   <p>
     <a href="{{ path('PwebMain_accueil') }}" class="btn">
       <i class="icon-chevron-left"></i>
       Retour à la liste
     </a>
-    <a href="{{ path('PwebMain_modifier', {'id': article.id}) }}" class="btn">
+    <a href="{{ path('PwebMain_modifier', {'id': produit.id}) }}" class="btn">
       <i class="icon-edit"></i>
-      Modifier l'article
+      Modifier le produit
     </a>
-    <a href="{{ path('PwebMain_supprimer', {'id': article.id}) }}" class="btn">
+    <a href="{{ path('PwebMain_supprimer', {'id': produit.id}) }}" class="btn">
       <i class="icon-trash"></i>
-      Supprimer l'article
+      Supprimer le produit
+    </a>
+    <a href="{{ path('PwebMain_accueil') }}" class="btn btn-primary btn-large">
+      Ajouter au panier
+      <i class="icon-chevron-right"></i>
     </a>
   </p>
+  
+  
+  
+  
+  
+  <p>Libellé : {{ produit.libelle }}</p>
+  <p>Description : {{ produit.description }}</p>
+  <p>Catégorie : {{ produit.categorie }}</p>
+  <p>Prix : {{ produit.prix }}</p>
+  <p>Poids : {{ produit.poids }}</p>
+  <p>Photo : {{ produit.photo }}</p>
+  <p>Lien (optionnel d'après le sujet) : <a href="{{ produit.lien }}"> {{ produit.lien }} </a></p>
 
 {% endblock %}
