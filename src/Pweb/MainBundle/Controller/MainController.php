@@ -11,6 +11,8 @@ use Pweb\MainBundle\Entity\Categorie;
 use Pweb\MainBundle\Entity\Acheteur;
 use Pweb\MainBundle\Entity\Commande;
 
+use JMS\SecurityExtraBundle\Annotation\Secure;
+
 
 class MainController extends Controller
 {
@@ -51,9 +53,57 @@ public function voirAction($id)
       'produit'        => $produit));
 }
 
+  /**
+	* @Secure(roles="ROLE_ADMIN")
+	*/
   public function ajouterAction()
   {
-// A la place du BigMac : mettre un formulaire d'enregistrement des produits.
+  	// On crée un objet Article
+	$prod = new Produit();
+	
+	// On crée le FormBuilder grâce à la méthode du contrôleur
+	$formBuilder = $this->createFormBuilder($prod);
+	$formBuilder
+		
+		->add('libelle',		'text')
+		->add('categorie',		'integer')
+		->add('description',	'textarea')
+		->add('prix',			'integer')
+		//->add('poids',			'number')
+		//->add('photo',			'file')
+		;
+
+	// Pour l'instant, pas de commentaires, catégories, etc., on les gérera plus tard
+	// À partir du formBuilder, on génère le formulaire
+	$form = $formBuilder->getForm();
+	
+	// On récupère la requête
+	$request = $this->get('request');
+	
+	// On vérifie qu'elle est de type POST
+	if ($request->getMethod() == 'POST') {
+	
+		// On fait le lien Requête <-> Formulaire
+		// A partir de maintenant, la variable $article contient les valeurs entrées dans le formulaire par le visiteur
+		$form->bind($request);
+		
+		// On vérifie que les valeurs rentrées sont correctes
+		// (Nous verrons la validation des objets en détail dans le prochain chapitre)
+		if ($form->isValid()) {
+		
+			// On l'enregistre notre objet $article dans la base de données
+			$em = $this->getDoctrine()->getManager(); 
+			$em->persist($prod);
+			$em->flush();
+			
+			// On redirige vers la page de visualisation de l'article nouvellement créé
+			return $this->redirect($this->generateUrl('PwebMain_voir', array('id' => $prod->getId())));
+			
+		} 
+	}
+	
+	// A la place du BigMac : mettre un formulaire d'enregistrement des produits.
+	/*
     $produit = new Produit();
     $produit->setLibelle('BigMac');
     $produit->setDescription('Le Big Mac est un hamburger vendu par la chaîne de restauration rapide McDonald\'s depuis 1968. Il a apparemment été inspiré par un hamburger similaire à deux étages vendu par la chaîne Big Boy depuis 1936.');
@@ -65,7 +115,7 @@ public function voirAction($id)
 
     $em = $this->getDoctrine()->getManager();
     $em->persist($produit);
-    $em->flush();
+    $em->flush();*/
 
 // Reste de la méthode qu'on avait déjà écrit
     if ($this->getRequest()->getMethod() == 'POST') {
@@ -73,10 +123,14 @@ public function voirAction($id)
       return $this->redirect( $this->generateUrl('PwebMain_voir', array('id' => $produit->getId())) );
     }
  
-    return $this->render('PwebMainBundle:Main:ajouter.html.twig');
+    return $this->render('PwebMainBundle:Main:ajouter.html.twig', array(
+'form' => $form->createView(), ));
   }
 
 // Ajout d'un article existant à plusieurs catégories existantes :
+	/**
+	* @Secure(roles="ROLE_ADMIN")
+	*/
   public function modifierAction($id)
   {
     $em = $this->getDoctrine()
@@ -94,6 +148,9 @@ public function voirAction($id)
       'produit'        => $produit));
   }
   
+  /**
+	* @Secure(roles="ROLE_ADMIN")
+	*/
   public function supprimerAction($id)
   {
     $em = $this->getDoctrine()
@@ -136,6 +193,9 @@ public function menuAction($nombre)
     ));
   }
   
+  /**
+	* @Secure(roles="ROLE_ADMIN")
+	*/
   public function modifierImageAction($id_article)
 {
   $em = $this->getDoctrine()->getManager();
@@ -207,6 +267,9 @@ public function menuAction($nombre)
     return $this->render('PwebMainBundle:Main:renitialisation.html.twig');
   }
   
+  /**
+	* @Secure(roles="ROLE_ACHETEUR")
+	*/
     public function espaceclientAction()
   {
     if ($this->getRequest()->getMethod() == 'POST') {
@@ -215,12 +278,35 @@ public function menuAction($nombre)
     return $this->render('PwebMainBundle:Main:espaceclient.html.twig');
   }
   
+  /**
+	* @Secure(roles="ROLE_ACHETEUR")
+	*/
       public function panierAction()
   {
     if ($this->getRequest()->getMethod() == 'POST') {
       $this->get('session')->getFlashBag()->add('info', 'panier');
     }
     return $this->render('PwebMainBundle:Main:panier.html.twig');
+  }
+  
+  public function connecterAction()
+  {
+    if ($this->getRequest()->getMethod() == 'POST') {
+      $this->get('session')->getFlashBag()->add('info', 'connexion');
+    }
+    $url = $this->generateUrl('PwebMain_accueil');
+    $option = 'login';
+    return $this->redirect($url.$option);
+  }
+  
+  	public function enregistrerAction()
+  {
+    if ($this->getRequest()->getMethod() == 'POST') {
+      $this->get('session')->getFlashBag()->add('info', 'connexion');
+    }
+    $url = $this->generateUrl('PwebMain_accueil');
+    $option = 'register';
+    return $this->redirect($url.$option);
   }
 
 }

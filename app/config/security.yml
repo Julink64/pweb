@@ -7,8 +7,8 @@ security:
         "FOS\UserBundle\Model\UserInterface": sha512
 
     role_hierarchy:
-        ROLE_ADMIN:       ROLE_USER
-        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+        ROLE_ACHETEUR:       ROLE_USER
+        ROLE_ADMIN: [ROLE_ACHETEUR, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
         fos_userbundle:
@@ -31,7 +31,7 @@ security:
                 remember_me: true 
             remember_me:
                 key: %secret% 
-            anonymous: false
+            anonymous: true
             logout: true
 
     access_control:

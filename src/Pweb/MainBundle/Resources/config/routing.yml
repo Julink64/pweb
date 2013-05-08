@@ -55,3 +55,11 @@ PwebMain_espaceclient:
 PwebMain_panier:
     path:      /panier
     defaults:  { _controller: PwebMainBundle:Main:panier }
+
+PwebMain_connecter:
+    path:      /connecter
+    defaults:  { _controller: PwebMainBundle:Main:connecter }
+    
+PwebMain_enregistrer:
+    path:      /enregistrer
+    defaults:  { _controller: PwebMainBundle:Main:enregistrer }
