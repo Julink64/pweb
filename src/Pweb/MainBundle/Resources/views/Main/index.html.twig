@@ -5,9 +5,11 @@
 {% endblock %}
  
 {% block PwebMain_body %}
- 
-  <h2>Liste des 15 derniers produits</h2>
- <br></br>
+   <a href="#" class="btn btn-mini"><i class="icon-font"></i> Tri alphabétique</a>
+<a href="#" class="btn btn-mini"><i class="icon-arrow-up"></i> Prix croissant</a>
+<a href="#" class="btn btn-mini"><i class="icon-arrow-down"></i> Prix décroissant</a>
+  <h1>Liste des 15 derniers produits</h1>
+<br></br>
   <ul>
     {% for produit in produit %}
       <li>
@@ -19,7 +21,7 @@
       </li>
       
     {% else %}
-      <li>Pas (encore !) de produits</li>
+      <li>Il n'y a pas encore de produits disponibles.</li>
     {% endfor %}
   </ul>
  

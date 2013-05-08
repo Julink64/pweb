@@ -14,27 +14,24 @@
       <div id="header" class="hero-unit">
         <h1>Outil de vente en ligne</h1>
         <p>Application Symfony 2 : Outil de vente en ligne</p>
-<a href="{{ path('PwebMain_connecter') }}" class="btn btn-success btn-large"><i class="icon-white icon-resize-small"></i> Se connecter</a>
+<a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i></a>
+<a href="{{ path('PwebMain_espaceclient') }}" class="btn btn-success btn-large"><i class="icon-white icon-resize-small"></i> Espace Client</a>
 <a href="{{ path('PwebMain_enregistrer') }}" class="btn btn-success btn-large"><i class="icon-white icon-resize-small"></i> Pas encore inscrit ?</a>
-       </div>
-        
+<a href="{{ path('PwebMain_panier') }}" class="btn btn-primary btn-large"><i class="icon-white icon-user"></i> Mon panier</a>
+</div>
                                         <!--
                                         <div style="float:left">gauche</div>
                                         <div style="float:right">droite</div>
                                         <div style="clear:both">suite</div>
                                         -->
-        
-            
       <div class="row">
     <div id="menu" class="span3">
-        <a href="{{ path('PwebMain_panier') }}" class="btn btn-primary btn-small"><i class="icon-white icon-user"></i> Mon panier</a>
-        <br></br>
-<a href="{{ path('PwebMain_espaceclient') }}" class="btn btn-success btn-small"><i class="icon-white icon-briefcase"></i> Espace client</a>
-            <h3>Le site</h3>
+<h3>Administrateur</h3>
           <ul class="nav nav-pills nav-stacked">
-            <li><a href="{{ path('PwebMain_accueil') }}">Accueil</a></li>
-            <li><a href="{{ path('PwebMain_ajouter') }}">Ajouter un produit (BigMac)</a></li>
-            <li><a href="{{ path('PwebMain_reinitialiser') }}">Ajouter les produits et catégories par défaut</a></li>
+            <li><a href="{{ path('PwebMain_ajouter') }}">Ajouter un produit</a></li>
+            <li><a href="{{ path('PwebMain_initialiseproduits') }}">Ajouter produits par défaut</a></li>
+            <li><a href="{{ path('PwebMain_initialisecategories') }}">Ajouter catégories par défaut</a></li>
+            <li><a href="{{ path('PwebMain_initialiseclear') }}">Tout nettoyer</a></li>
           </ul>
                      
           {{ render(controller("PwebMainBundle:Main:menu", {'nombre': 3})) }}

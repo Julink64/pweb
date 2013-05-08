@@ -1,0 +1,22 @@
+{% extends "PwebMainBundle::layout.html.twig" %}
+ 
+{% block title %}
+  Réinitialisation
+{% endblock %}
+ 
+{% block PwebMain_body %}
+
+  <h2>Voulez vous vraiment effacer tout le contenu de la base de donnée ?</h2>
+  <br></br>
+  <p>Liste des éléments qui seront effacés :</p>
+  <ol>
+<li> Produits </li>
+<li> Catégories </li>
+<li> Commande </li>
+<li> Acheteur </li>
+</ol>
+<br></br>
+<a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i> Retour à l'accueil</a>
+<a href="#" class="btn btn-danger btn-large">
+    <i class="icon-white icon-warning-sign"></i> Confirmer la suppression !</a>
+{% endblock %}

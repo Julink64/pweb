@@ -39,11 +39,19 @@ PwebMain_supprimer:
         id:  \d+
 
 # ------------------------------------------------------------------------------
-# REINITIALISER
+# INITIALISER
 
-PwebMain_reinitialiser:
-    path:      /reinitialiser
-    defaults:  { _controller: PwebMainBundle:Main:reinitialiser }
+PwebMain_initialiseproduits:
+    path:      /initialiser/produits
+    defaults:  { _controller: PwebMainBundle:Main:initialiseproduits }
+
+PwebMain_initialisecategories:
+    path:      /initialiser/categories
+    defaults:  { _controller: PwebMainBundle:Main:initialisecategories }
+    
+PwebMain_initialiseclear:
+    path:      /initialiser/clear
+    defaults:  { _controller: PwebMainBundle:Main:initialiseclear }
 
 # ------------------------------------------------------------------------------
 # ESPACE CLIENT

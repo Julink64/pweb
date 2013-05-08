@@ -1,11 +1,7 @@
 <?php
 namespace Pweb\MainBundle\Controller;
- 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
-use Pweb\MainBundle\Entity\Article;
-use Pweb\MainBundle\Entity\Image;
-
 use Pweb\MainBundle\Entity\Produit;
 use Pweb\MainBundle\Entity\Categorie;
 use Pweb\MainBundle\Entity\Acheteur;
@@ -53,14 +49,9 @@ public function voirAction($id)
       'produit'        => $produit));
 }
 
-  /**
-	* @Secure(roles="ROLE_ADMIN")
-	*/
   public function ajouterAction()
   {
-  	// On crée un objet Article
 	$prod = new Produit();
-	
 	// On crée le FormBuilder grâce à la méthode du contrôleur
 	$formBuilder = $this->createFormBuilder($prod);
 	$formBuilder
@@ -101,21 +92,6 @@ public function voirAction($id)
 			
 		} 
 	}
-	
-	// A la place du BigMac : mettre un formulaire d'enregistrement des produits.
-	/*
-    $produit = new Produit();
-    $produit->setLibelle('BigMac');
-    $produit->setDescription('Le Big Mac est un hamburger vendu par la chaîne de restauration rapide McDonald\'s depuis 1968. Il a apparemment été inspiré par un hamburger similaire à deux étages vendu par la chaîne Big Boy depuis 1936.');
-    $produit->setCategorie('0');
-    $produit->setPrix('6.05');
-    $produit->setPoids('180');
-    $produit->setPhoto('http://localhost/Symfony/web/Produits/BigMac.png');
-    $produit->setLien('http://fr.wikipedia.org/wiki/Big_Mac‎');
-
-    $em = $this->getDoctrine()->getManager();
-    $em->persist($produit);
-    $em->flush();*/
 
 // Reste de la méthode qu'on avait déjà écrit
     if ($this->getRequest()->getMethod() == 'POST') {
@@ -128,9 +104,7 @@ public function voirAction($id)
   }
 
 // Ajout d'un article existant à plusieurs catégories existantes :
-	/**
-	* @Secure(roles="ROLE_ADMIN")
-	*/
+
   public function modifierAction($id)
   {
     $em = $this->getDoctrine()
@@ -148,9 +122,6 @@ public function voirAction($id)
       'produit'        => $produit));
   }
   
-  /**
-	* @Secure(roles="ROLE_ADMIN")
-	*/
   public function supprimerAction($id)
   {
     $em = $this->getDoctrine()
@@ -161,41 +132,38 @@ public function voirAction($id)
     if ($produit === null) {
       throw $this->createNotFoundException('Article[id='.$id.'] inexistant.');
     }
-    $liste_categories = $em->getRepository('PwebMainBundle:Categorie')
-                           ->findAll();
-    foreach($liste_categories as $categorie)
-    {
-      $produit->removeCategorie($categorie);
-    }
-    
-        if($produit === null)
+    if($produit === null)
     {      throw $this->createNotFoundException('Produit[id='.$id.'] inexistant.');    }
     return $this->render('PwebMainBundle:Main:supprimer.html.twig', array(
       'produit'        => $produit));
   }
-
   
 public function menuAction($nombre)
   {
-    $nombre=10;
-    $liste = $this->getDoctrine()
+    $nombre_art=10;$nombre_cat=10;
+    $liste_art = $this->getDoctrine()
                   ->getManager()
                   ->getRepository('PwebMainBundle:Produit')
                   ->findBy(
                     array(),          // Pas de critère
                     array('id' => 'desc'), // On trie par date décroissante
-                    $nombre,         // On sélectionne $nombre articles
+                    $nombre_art,         // On sélectionne $nombre articles
                     0                // À partir du premier
                   );
- 
+    $liste_cat = $this->getDoctrine()
+              ->getManager()
+              ->getRepository('PwebMainBundle:Categorie')
+              ->findBy(
+                array(),          // Pas de critère
+                array('id' => 'desc'), // On trie par date décroissante
+                $nombre_cat,         // On sélectionne $nombre articles
+                0                // À partir du premier
+              );
+
     return $this->render('PwebMainBundle:Main:menu.html.twig', array(
-      'liste_articles' => $liste // C'est ici tout l'intérêt : le contrôleur passe les variables nécessaires au template !
-    ));
+      'liste_articles' => $liste_art,'liste_categories' => $liste_cat));
   }
   
-  /**
-	* @Secure(roles="ROLE_ADMIN")
-	*/
   public function modifierImageAction($id_article)
 {
   $em = $this->getDoctrine()->getManager();
@@ -205,13 +173,11 @@ public function menuAction($nombre)
  
   return new Response('OK');
 }
-  
-    public function reinitialiserAction()
+
+    public function initialiseproduitsAction()
   {
     $em=$this->getDoctrine()->getManager();
 
-// Fonction qui vide toute la base de donnée : missing
-    
 // Produits
     $article1 = new Produit();
     $article1->setLibelle('BigMac');
@@ -252,24 +218,55 @@ public function menuAction($nombre)
     $article4->setPhoto('http://localhost/Symfony/web/Produits/iPhone-6.png');
     $article4->setLien('http://www.terrafemina.com/culture/culture-web/articles/25462-iphone-6-ou-iphone-5s-le-plein-de-nouveautes-pour-ios7.html');
     $em->persist($article4);
+    
+    $article5 = new Produit();
+    $article5->setLibelle('F-22 Raptor');
+    $article5->setDescription('Le F-22 Raptor est un avion de chasse de cinquième génération propulsé par deux turboréacteurs Pratt & Whitney F-119-PW-100 à postcombustion d’une poussée unitaire d’environ 35 000 lbf, soit 156 kN. Pour comparaison, la poussée des avions de chasse McDonnell Douglas F-15 Eagle et General Dynamics F-16 Falcon est comprise entre 23 000 et 29 000 lbf.');
+    $article5->setCategorie('4');
+    $article5->setPrix('350000000.00');
+    $article5->setPoids('27000000');
+    $article5->setPhoto('http://localhost/Symfony/web/Produits/f22.jpg');
+    $article5->setLien('http://info-aviation.com/?p=14120');
+    $em->persist($article5);
+
+    $em->flush();
+    return $this->render('PwebMainBundle:Main:initialiseproduits.html.twig');
+  }
+  
+    public function initialisecategoriesAction()
+  {
+    $em=$this->getDoctrine()->getManager();
 
 // Categories
     $categorie1 = new Categorie();
     $categorie1->setLibelleCategorie('Smartphones');
+    $em->persist($categorie1);
     
     $categorie2 = new Categorie();
     $categorie2->setLibelleCategorie('Voitures');
+    $em->persist($categorie2);
     
     $categorie3 = new Categorie();
     $categorie3->setLibelleCategorie('Restauration');
+    $em->persist($categorie3);
+    
+    $categorie4 = new Categorie();
+    $categorie4->setLibelleCategorie('Aéronef');
+    $em->persist($categorie4);
     
     $em->flush();
-    return $this->render('PwebMainBundle:Main:renitialisation.html.twig');
+    return $this->render('PwebMainBundle:Main:initialisecategories.html.twig');
   }
   
-  /**
-	* @Secure(roles="ROLE_ACHETEUR")
-	*/
+    public function initialiseclearAction()
+  {
+// Fonction qui vide toute la base de donnée : missing
+    $em=$this->getDoctrine()->getManager();
+
+    $em->flush();
+    return $this->render('PwebMainBundle:Main:initialiseclear.html.twig');
+  }
+  
     public function espaceclientAction()
   {
     if ($this->getRequest()->getMethod() == 'POST') {
@@ -278,9 +275,6 @@ public function menuAction($nombre)
     return $this->render('PwebMainBundle:Main:espaceclient.html.twig');
   }
   
-  /**
-	* @Secure(roles="ROLE_ACHETEUR")
-	*/
       public function panierAction()
   {
     if ($this->getRequest()->getMethod() == 'POST') {
