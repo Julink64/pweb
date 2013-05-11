@@ -59,9 +59,10 @@ public function voirAction($id)
 		->add('libelle',		'text')
 		->add('categorie',		'integer')
 		->add('description',	'textarea')
-		->add('prix',			'integer')
-		//->add('poids',			'number')
-		//->add('photo',			'file')
+		->add('prix',			'text')
+		->add('poids',			'text')
+		->add('photo',			'text')
+		->add('lien',			'text')
 		;
 
 	// Pour l'instant, pas de commentaires, catégories, etc., on les gérera plus tard
@@ -177,7 +178,7 @@ public function menuAction($nombre)
     public function initialiseproduitsAction()
   {
     $em=$this->getDoctrine()->getManager();
-
+	$url = $this->generateUrl('PwebMain_accueil');
 // Produits
     $article1 = new Produit();
     $article1->setLibelle('BigMac');
@@ -185,7 +186,7 @@ public function menuAction($nombre)
     $article1->setCategorie('3');
     $article1->setPrix('6.05');
     $article1->setPoids('180');
-    $article1->setPhoto('http://localhost/Symfony/web/Produits/BigMac.png');
+    $article1->setPhoto(str_replace('app_dev.php/','Produits/BigMac.png',$url));
     $article1->setLien('http://fr.wikipedia.org/wiki/Big_Mac‎');
     $em->persist($article1);
     
@@ -195,7 +196,7 @@ public function menuAction($nombre)
     $article2->setCategorie('1');
     $article2->setPrix('634.14');
     $article2->setPoids('110');
-    $article2->setPhoto('http://localhost/Symfony/web/Produits/GalaxyS4.jpg');
+    $article2->setPhoto(str_replace('app_dev.php/','Produits/GalaxyS4.jpg',$url));
     $article2->setLien('http://www.galaxys4.fr');
     $em->persist($article2);
 
@@ -205,7 +206,7 @@ public function menuAction($nombre)
     $article3->setCategorie('2');
     $article3->setPrix('97405.34');
     $article3->setPoids('2467943');
-    $article3->setPhoto('http://localhost/Symfony/web/Produits/Porsche.jpg');
+    $article3->setPhoto(str_replace('app_dev.php/','Produits/Porsche.jpg',$url));
     $article3->setLien('http://www.porsche.com/france/');
     $em->persist($article3);
     
@@ -215,7 +216,7 @@ public function menuAction($nombre)
     $article4->setCategorie('1');
     $article4->setPrix('654.45');
     $article4->setPoids('107');
-    $article4->setPhoto('http://localhost/Symfony/web/Produits/iPhone-6.png');
+    $article4->setPhoto(str_replace('app_dev.php/','Produits/iPhone-6.png',$url));
     $article4->setLien('http://www.terrafemina.com/culture/culture-web/articles/25462-iphone-6-ou-iphone-5s-le-plein-de-nouveautes-pour-ios7.html');
     $em->persist($article4);
     
@@ -225,7 +226,7 @@ public function menuAction($nombre)
     $article5->setCategorie('4');
     $article5->setPrix('350000000.00');
     $article5->setPoids('27000000');
-    $article5->setPhoto('http://localhost/Symfony/web/Produits/f22.jpg');
+    $article5->setPhoto(str_replace('app_dev.php/','Produits/f22.jpg',$url));
     $article5->setLien('http://info-aviation.com/?p=14120');
     $em->persist($article5);
 
