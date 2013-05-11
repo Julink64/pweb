@@ -14,12 +14,30 @@
     </a>
 {% endif %}
 
-<br></br>
-  <div class="well">
+<p align="center"><center><h2>{{ produit.prix }} € seulement ! <img src="http://localhost/Symfony/web/Produits/prix-choc.gif" width="90" height="90" alt="Prix choc" align="center"/></h2></center>
+<p align="center"></p>
+
+<h3>Description :</h3>
+<div class="well">
     {{ produit.description }}
   </div>
-<p align="center"><center><h2>{{ produit.prix }} € seulement !</h2></center>
-<p align="center"><img src="http://localhost/Symfony/web/Produits/prix-choc.gif" width="90" height="90" alt="Prix choc" align="center"/></p>
+<h3>Caractéristiques techniques :</h3>
+<div class="well">
+  <p>Libellé : {{ produit.libelle }}</p>
+  <p>Catégorie : {{ produit.categorie }}</p>
+  <p>Prix : {{ produit.prix }} €</p>
+  <p>Poids : {{ produit.poids }} g</p>
+  <p>Photo : <a href="{{ produit.photo }}"> Voir cet article de plus près </a></p>
+  <p>Lien : <a href="{{ produit.lien }}"> Lien vers le fournisseur officiel </a></p>
+  </div>
+<h3>Prix :</h3>
+<div class="well">
+  <p>Prix sans les frais de ports : {{ produit.prix }} €</p>
+  <p>Frais de ports : 0,10 € x {{ produit.poids }} = </p>
+  <p>Prix total : {{ produit.prix }} + = </p>
+  </div>
+
+  <center>
   <p>
     <a href="{{ path('PwebMain_accueil') }}" class="btn">
       <i class="icon-chevron-left"></i>
@@ -33,10 +51,13 @@
       <i class="icon-trash"></i>
       Supprimer le produit
     </a>
-<a href="{{ path('PwebMain_panier') }}" class="btn btn-primary btn-large"><i class="icon-white icon-check"></i> Ajouter au panier</a> 
+<a href="{{ path('PwebMain_panier') }}" class="btn btn-info btn-large"><i class="icon-white icon-check"></i> Ajouter au panier</a> 
   </p>
+ </center>
   
   
+<!--
+<h3>Caractéristiques techniques :</h3>
   <p>Libellé : {{ produit.libelle }}</p>
   <p>Description : {{ produit.description }}</p>
   <p>Catégorie : {{ produit.categorie }}</p>
@@ -44,5 +65,7 @@
   <p>Poids : {{ produit.poids }} g</p>
   <p>Photo : <a href="{{ produit.photo }}"> Voir cet article de plus près </a></p>
   <p>Lien : <a href="{{ produit.lien }}"> Lien vers le fournisseur officiel </a></p>
-
+-->
+  
+  
 {% endblock %}

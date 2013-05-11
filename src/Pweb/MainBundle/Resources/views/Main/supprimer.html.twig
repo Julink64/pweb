@@ -9,7 +9,7 @@
 {% block PwebMain_body %}
  
   <h2>Désirez vous supprimer ce produit ?</h2>
- <br></br>
+       <br></br>
     <a href="{{ produit.photo }}">
     <p align="center"><img src="{{ produit.photo }}" width="330" height="330" alt="Produit" align="center"/></p>
     </a>
@@ -18,15 +18,20 @@
 <p>Votre stock pèsera <strong>{{ produit.poids }} grammes</strong> en moins.</p>
 <p>Êtes vous sùr de vouloir vous délester de ce produit ?</p>
   <br></br>
+  
+  
+  
+  
+
+  {# On met l'id de l'article dans la route de l'action du formulaire #}
   <center>
-  <p>
-    <a href="{{ path('PwebMain_accueil', {'id': produit.id}) }}" class="btn btn-inverse btn-small">
+  <form action="{{ path('PwebMain_supprimer', {'id': produit.id}) }}" method="post">
+    <a href="{{ path('PwebMain_voir', {'id': produit.id}) }}" class="btn btn-inverse btn-small">
       <i class="icon-chevron-left"></i>
-      Retour à la liste des articles
+      Retour au produit
     </a>
-<a href="{{ path('PwebMain_supprimer', {'id': produit.id}) }}" class="btn btn-danger btn-large">
-    <i class="icon-white icon-warning-sign"></i> Confirmer la suppression !</a>
-  </p>
+    <input type="submit" value=" Confirmer la suppression" class="btn btn-danger btn-large" />
+    {{ form_rest(form) }}
+  </form>
   </center>
- 
 {% endblock %}

@@ -8,6 +8,8 @@
     {% block stylesheets %}
       <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}" type="text/css" />
     {% endblock %}
+    <script src="/js-global/FancyZoom.js" type="text/javascript"></script>
+    <script src="/js-global/FancyZoomHTML.js" type="text/javascript"></script>
   </head>
   <body>
     <div class="container">
@@ -15,9 +17,9 @@
         <h1>Outil de vente en ligne</h1>
         <p>Application Symfony 2 : Outil de vente en ligne</p>
 <a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i></a>
-<a href="{{ path('PwebMain_espaceclient') }}" class="btn btn-success btn-large"><i class="icon-white icon-resize-small"></i> Espace Client</a>
+<a href="{{ path('PwebMain_espaceclient') }}" class="btn btn-success btn-large"><i class="icon-white icon-user"></i> Mon Espace Client</a>
 <a href="{{ path('PwebMain_enregistrer') }}" class="btn btn-success btn-large"><i class="icon-white icon-resize-small"></i> Pas encore inscrit ?</a>
-<a href="{{ path('PwebMain_panier') }}" class="btn btn-primary btn-large"><i class="icon-white icon-user"></i> Mon panier</a>
+<a href="{{ path('PwebMain_panier') }}" class="btn btn-info btn-large"><i class="icon-white icon-user"></i> Mon panier</a>
 </div>
                                         <!--
                                         <div style="float:left">gauche</div>
@@ -28,9 +30,11 @@
     <div id="menu" class="span3">
 <h3>Administrateur</h3>
           <ul class="nav nav-pills nav-stacked">
-            <li><a href="{{ path('PwebMain_ajouter') }}">Ajouter un produit</a></li>
             <li><a href="{{ path('PwebMain_initialiseproduits') }}">Ajouter produits par défaut</a></li>
             <li><a href="{{ path('PwebMain_initialisecategories') }}">Ajouter catégories par défaut</a></li>
+            <li><a href="{{ path('PwebMain_ajouter') }}">Ajouter un produit</a></li>
+            <li><a href="{{ path('PwebMain_categoriesgerer') }}">Gérer les catégories</a></li>
+            <li><a href="{{ path('PwebMain_statut') }}">Modifier le statut d’une commande</a></li>
             <li><a href="{{ path('PwebMain_initialiseclear') }}">Tout nettoyer</a></li>
           </ul>
                      
@@ -52,7 +56,7 @@
     </div>
  
   {% block javascripts %}
-    {# Ajoutez ces lignes JavaScript si vous comptez vous servir des fonctionnalités du bootstrap Twitter #}
+    {# Fonctionnalités du bootstrap Twitter #}
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}"></script>
   {% endblock %}

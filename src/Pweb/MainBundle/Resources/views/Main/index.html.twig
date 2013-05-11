@@ -5,12 +5,14 @@
 {% endblock %}
  
 {% block PwebMain_body %}
-   <a href="#" class="btn btn-mini"><i class="icon-font"></i> Tri alphabétique</a>
-<a href="#" class="btn btn-mini"><i class="icon-arrow-up"></i> Prix croissant</a>
-<a href="#" class="btn btn-mini"><i class="icon-arrow-down"></i> Prix décroissant</a>
   <h1>Liste des 15 derniers produits</h1>
 <br></br>
-  <ul>
+<a href="{{ path('PwebMain_accueil') }}" class="btn btn-mini"><i class="icon-font"></i> Tri alphabétique</a>
+<a href="{{ path('PwebMain_triprixcroissant') }}" class="btn btn-mini"><i class="icon-arrow-up"></i> Prix croissant</a>
+<a href="{{ path('PwebMain_triprixdecroissant') }}" class="btn btn-mini"><i class="icon-arrow-down"></i> Prix décroissant</a>
+<a href="{{ path('PwebMain_trirecent') }}" class="btn btn-mini"><i class="icon-time"></i> Produits récents</a>
+<br></br>
+<ul>
     {% for produit in produit %}
       <li>
         <a href="{{ path('PwebMain_voir', {'id': produit.id}) }}">{{ produit.libelle }}</a>

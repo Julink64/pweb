@@ -12,7 +12,10 @@ use JMS\SecurityExtraBundle\Annotation\Secure;
 
 class MainController extends Controller
 {
-  public function indexAction($page)
+# ------------------------------------------------------------------------------
+# ACCUEIL
+
+  public function indexAction()
   {
 $nombre=15;
     $produit = $this->getDoctrine()
@@ -20,23 +23,105 @@ $nombre=15;
                   ->getRepository('PwebMainBundle:Produit')
                   ->findBy(
                     array(),          // Pas de critère
-                    array('id' => 'desc'), // On trie par date décroissante
-                    $nombre,         // On sélectionne $nombre articles
+                    array('libelle' => 'asc'), // Trie alphabétique (le Big mac est gagnant)
+                    $nombre,         // On sélectionne $nombre produits
                     0                // À partir du premier
                   );
       
+      return $this->render('PwebMainBundle:Main:index.html.twig', array(
+    'produit' => $produit
+  ));
+  }
+
+  public function indextriprixcroissantAction()
+  {
+$nombre=15;
+    $produit = $this->getDoctrine()
+                  ->getManager()
+                  ->getRepository('PwebMainBundle:Produit')
+                  ->findBy(
+                    array(),          // Pas de critère
+                    array('prix' => 'asc'), // Trie par prix croissant
+                    $nombre,         // On sélectionne $nombre produits
+                    0                // À partir du premier
+                  );
       
       return $this->render('PwebMainBundle:Main:index.html.twig', array(
     'produit' => $produit
   ));
   }
   
-public function voirAction($id)
+  public function indextriprixdecroissantAction()
+  {
+$nombre=15;
+    $produit = $this->getDoctrine()
+                  ->getManager()
+                  ->getRepository('PwebMainBundle:Produit')
+                  ->findBy(
+                    array(),          // Pas de critère
+                    array('prix' => 'desc'), // Trie par prix décroissant
+                    $nombre,         // On sélectionne $nombre produits
+                    0                // À partir du premier
+                  );
+      
+      return $this->render('PwebMainBundle:Main:index.html.twig', array(
+    'produit' => $produit
+  ));
+  }
+
+  public function indextrirecentAction()
+  {
+$nombre=15;
+    $produit = $this->getDoctrine()
+                  ->getManager()
+                  ->getRepository('PwebMainBundle:Produit')
+                  ->findBy(
+                    array(),          // Pas de critère
+                    array('id' => 'desc'), // Trie par id décroissant
+                    $nombre,         // On sélectionne $nombre articles
+                    0                // À partir du premier
+                  );
+      
+      return $this->render('PwebMainBundle:Main:index.html.twig', array(
+    'produit' => $produit
+  ));
+  }
+
+  public function menuAction()
+  {
+    $nombre_art=10;$nombre_cat=10;
+    $liste_art = $this->getDoctrine()
+                  ->getManager()
+                  ->getRepository('PwebMainBundle:Produit')
+                  ->findBy(
+                    array(),          // Pas de critère
+                    array('id' => 'desc'), // On trie par date décroissante
+                    $nombre_art,         // On sélectionne $nombre articles
+                    0                // À partir du premier
+                  );
+    $liste_cat = $this->getDoctrine()
+              ->getManager()
+              ->getRepository('PwebMainBundle:Categorie')
+              ->findBy(
+                array(),          // Pas de critère
+                array('id' => 'desc'), // On trie par date décroissante
+                $nombre_cat,         // On sélectionne $nombre articles
+                0                // À partir du premier
+              );
+
+    return $this->render('PwebMainBundle:Main:menu.html.twig', array(
+      'liste_articles' => $liste_art,'liste_categories' => $liste_cat));
+  }
+
+# ------------------------------------------------------------------------------
+# VOIR UN PRODUIT
+
+  public function voirAction($id)
   {
     // On récupère l'EntityManager
     $em = $this->getDoctrine()
                ->getManager();
- 
+
     $produit = $em->getRepository('PwebMainBundle:Produit')
               ->find($id);
 
@@ -49,7 +134,10 @@ public function voirAction($id)
       'produit'        => $produit));
 }
 
-  public function ajouterAction()
+# ------------------------------------------------------------------------------
+# COMMANDES ADMINISTRATEUR : AJOUTER, MODIFIER, SUPPRIMMER, GERER, VALIDER
+
+ public function ajouterAction()
   {
 	$prod = new Produit();
 	// On crée le FormBuilder grâce à la méthode du contrôleur
@@ -104,8 +192,6 @@ public function voirAction($id)
 'form' => $form->createView(), ));
   }
 
-// Ajout d'un article existant à plusieurs catégories existantes :
-
   public function modifierAction($id)
   {
     $em = $this->getDoctrine()
@@ -123,62 +209,160 @@ public function voirAction($id)
       'produit'        => $produit));
   }
   
-  public function supprimerAction($id)
-  {
-    $em = $this->getDoctrine()
-               ->getManager();
- 
-    $produit = $em->getRepository('PwebMainBundle:Produit')
-                  ->find($id);
-    if ($produit === null) {
-      throw $this->createNotFoundException('Article[id='.$id.'] inexistant.');
-    }
-    if($produit === null)
-    {      throw $this->createNotFoundException('Produit[id='.$id.'] inexistant.');    }
-    return $this->render('PwebMainBundle:Main:supprimer.html.twig', array(
-      'produit'        => $produit));
-  }
-  
-public function menuAction($nombre)
-  {
-    $nombre_art=10;$nombre_cat=10;
-    $liste_art = $this->getDoctrine()
-                  ->getManager()
-                  ->getRepository('PwebMainBundle:Produit')
-                  ->findBy(
-                    array(),          // Pas de critère
-                    array('id' => 'desc'), // On trie par date décroissante
-                    $nombre_art,         // On sélectionne $nombre articles
-                    0                // À partir du premier
-                  );
-    $liste_cat = $this->getDoctrine()
-              ->getManager()
-              ->getRepository('PwebMainBundle:Categorie')
-              ->findBy(
-                array(),          // Pas de critère
-                array('id' => 'desc'), // On trie par date décroissante
-                $nombre_cat,         // On sélectionne $nombre articles
-                0                // À partir du premier
-              );
-
-    return $this->render('PwebMainBundle:Main:menu.html.twig', array(
-      'liste_articles' => $liste_art,'liste_categories' => $liste_cat));
-  }
-  
   public function modifierImageAction($id_article)
-{
+  {
   $em = $this->getDoctrine()->getManager();
   $article = $em->getRepository('PwebMainBundle:Article')->find($id_article);
   $article->getImage()->setUrl('test.png');
   $em->flush();
  
   return new Response('OK');
-}
+  }
 
-    public function initialiseproduitsAction()
+  public function supprimerAction(Produit $produit)
+  {
+    // On crée un formulaire vide, qui ne contiendra que le champ CSRF
+    // Cela permet de protéger la suppression d'article contre cette faille
+    $form = $this->createFormBuilder()->getForm();
+
+    $request = $this->getRequest();
+    if ($request->getMethod() == 'POST') {
+      $form->bind($request);
+
+      if ($form->isValid()) { // Ici, isValid ne vérifie donc que le CSRF
+        // On supprime l'article
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($produit);
+        $em->flush();
+
+        // On définit un message flash
+        $this->get('session')->getFlashBag()->add('info', 'Produit bien supprimé');
+
+        // Puis on redirige vers l'accueil
+        return $this->redirect($this->generateUrl('PwebMain_accueil'));
+      }
+    }
+
+    // Si la requête est en GET, on affiche une page de confirmation avant de supprimer
+    return $this->render('PwebMainBundle:Main:supprimer.html.twig', array(
+      'produit' => $produit,
+      'form'    => $form->createView()
+    ));
+  }
+
+  public function categoriesgererAction()
+  {
+$nombre_cat=100;
+$liste_cat = $this->getDoctrine()
+  ->getManager()
+  ->getRepository('PwebMainBundle:Categorie')
+  ->findBy(
+    array(),          // Pas de critère
+    array('id' => 'asc'), // On trie par date décroissante
+    $nombre_cat,         // On sélectionne $nombre articles
+    0                // À partir du premier
+  );
+    return $this->render('PwebMainBundle:Main:categoriesgerer.html.twig', array(
+      'liste_categories' => $liste_cat));
+  }
+
+  public function statutAction()
+  {
+$nombre_comm=100;
+$liste_comm = $this->getDoctrine()
+  ->getManager()
+  ->getRepository('PwebMainBundle:Commande')
+  ->findBy(
+    array(),          // Pas de critère
+    array('id' => 'asc'), // On trie par date décroissante
+    $nombre_comm,         // On sélectionne $nombre articles
+    0                // À partir du premier
+  );
+    return $this->render('PwebMainBundle:Main:statut.html.twig', array(
+      'liste_commandes' => $liste_comm));
+  }
+
+# ------------------------------------------------------------------------------
+# ESPACE CLIENT, PANIER, VALIDATION
+
+  public function espaceclientAction()
+  {
+    if ($this->getRequest()->getMethod() == 'POST') {
+      $this->get('session')->getFlashBag()->add('info', 'espace client');
+    }
+    return $this->render('PwebMainBundle:Main:espaceclient.html.twig');
+  }
+  
+  public function panierAction()
+  {
+      $nombre_comm=100;
+$liste_comm = $this->getDoctrine()
+  ->getManager()
+  ->getRepository('PwebMainBundle:Commande')
+  ->findBy(
+    array(),          // Pas de critère
+    array('id' => 'asc'), // On trie par date décroissante
+    $nombre_comm,         // On sélectionne $nombre articles
+    0                // À partir du premier
+  );
+    return $this->render('PwebMainBundle:Main:panier.html.twig', array(
+      'liste_commandes' => $liste_comm));
+  }
+  
+  public function connecterAction()
+  {
+    if ($this->getRequest()->getMethod() == 'POST') {
+      $this->get('session')->getFlashBag()->add('info', 'connexion');
+    }
+    $url = $this->generateUrl('PwebMain_accueil');
+    $option = 'login';
+    return $this->redirect($url.$option);
+  }
+
+  public function enregistrerAction()
+  {
+    if ($this->getRequest()->getMethod() == 'POST') {
+      $this->get('session')->getFlashBag()->add('info', 'connexion');
+    }
+    $url = $this->generateUrl('PwebMain_accueil');
+    $option = 'register';
+    return $this->redirect($url.$option);
+  }
+
+# ------------------------------------------------------------------------------
+# INITIALISER
+
+  public function initialiseclearAction()
+  {
+      return $this->render('PwebMainBundle:Main:initialiseclear.html.twig');
+  }
+
+  public function initialisetruncatetableAction()
+  {
+// MySQL will not be able to truncate any table once it has a foreign key constraint.
+$connection=$this->getDoctrine()->getManager()->getConnection();
+$platform=$connection->getDatabasePlatform();
+
+// Effacer les Produits
+$connection->executeUpdate($platform->getTruncateTableSQL('Produit', true /* whether to cascade */));
+
+// Effacer les Catégories
+$connection->executeUpdate($platform->getTruncateTableSQL('Categorie', true /* whether to cascade */));
+
+// Effacer les Commande
+$connection->executeUpdate($platform->getTruncateTableSQL('Commande', true /* whether to cascade */));
+
+// Effacer les Acheteur
+$connection->executeUpdate($platform->getTruncateTableSQL('Acheteur', true /* whether to cascade */));
+
+    return $this->redirect($this->generateUrl('PwebMain_accueil'));
+  }
+  
+  public function initialiseproduitsAction()
   {
     $em=$this->getDoctrine()->getManager();
-	$url = $this->generateUrl('PwebMain_accueil');
+    $url = $this->generateUrl('PwebMain_accueil');
+
 // Produits
     $article1 = new Produit();
     $article1->setLibelle('BigMac');
@@ -187,7 +371,7 @@ public function menuAction($nombre)
     $article1->setPrix('6.05');
     $article1->setPoids('180');
     $article1->setPhoto(str_replace('app_dev.php/','Produits/BigMac.png',$url));
-    $article1->setLien('http://fr.wikipedia.org/wiki/Big_Mac‎');
+    $article1->setLien('http://www.mcdonalds.fr');
     $em->persist($article1);
     
     $article2 = new Produit();
@@ -229,12 +413,35 @@ public function menuAction($nombre)
     $article5->setPhoto(str_replace('app_dev.php/','Produits/f22.jpg',$url));
     $article5->setLien('http://info-aviation.com/?p=14120');
     $em->persist($article5);
+    
+    $article6 = new Produit();
+    $article6->setLibelle('Téléviseur LED 3D - 16/9 - 140cm - HDTV 1080p');
+    $article6->setDescription('Résolution HDTV 1080p
+Contraste Dynamique : 5 000 000:1
+Cinema 3D pour tous. Partagez les films 3D avec vos proches sans contrainte!
+Transformez tous vos contenus 2D en 3D
+Dual Play, jouez a 2 en même temps et en plein ecran.
+TNT HD intégré
+3 x HDMI 1.4
+DLNA
+Rétro-éclairage Edge LED
+Compatibilité USB 2.0 (Photo, Musique, Vidéo, DIVX HD)
+Smart Energy Saving Plus
+Fonction CI+
+Design Ultra Fin
+Fréquence de 200 Hz (MCI) ');
+    $article6->setCategorie('5');
+    $article6->setPrix('849.00');
+    $article6->setPoids('21900');
+    $article6->setPhoto(str_replace('app_dev.php/','Produits/tv.jpg',$url));
+    $article6->setLien('http://www.lg.com/fr');
+    $em->persist($article6);
 
     $em->flush();
     return $this->render('PwebMainBundle:Main:initialiseproduits.html.twig');
-  }
+}
   
-    public function initialisecategoriesAction()
+  public function initialisecategoriesAction()
   {
     $em=$this->getDoctrine()->getManager();
 
@@ -255,53 +462,12 @@ public function menuAction($nombre)
     $categorie4->setLibelleCategorie('Aéronef');
     $em->persist($categorie4);
     
+    $categorie5 = new Categorie();
+    $categorie5->setLibelleCategorie('TV');
+    $em->persist($categorie5);
+    
     $em->flush();
     return $this->render('PwebMainBundle:Main:initialisecategories.html.twig');
-  }
-  
-    public function initialiseclearAction()
-  {
-// Fonction qui vide toute la base de donnée : missing
-    $em=$this->getDoctrine()->getManager();
-
-    $em->flush();
-    return $this->render('PwebMainBundle:Main:initialiseclear.html.twig');
-  }
-  
-    public function espaceclientAction()
-  {
-    if ($this->getRequest()->getMethod() == 'POST') {
-      $this->get('session')->getFlashBag()->add('info', 'espace client');
-    }
-    return $this->render('PwebMainBundle:Main:espaceclient.html.twig');
-  }
-  
-      public function panierAction()
-  {
-    if ($this->getRequest()->getMethod() == 'POST') {
-      $this->get('session')->getFlashBag()->add('info', 'panier');
-    }
-    return $this->render('PwebMainBundle:Main:panier.html.twig');
-  }
-  
-  public function connecterAction()
-  {
-    if ($this->getRequest()->getMethod() == 'POST') {
-      $this->get('session')->getFlashBag()->add('info', 'connexion');
-    }
-    $url = $this->generateUrl('PwebMain_accueil');
-    $option = 'login';
-    return $this->redirect($url.$option);
-  }
-  
-  	public function enregistrerAction()
-  {
-    if ($this->getRequest()->getMethod() == 'POST') {
-      $this->get('session')->getFlashBag()->add('info', 'connexion');
-    }
-    $url = $this->generateUrl('PwebMain_accueil');
-    $option = 'register';
-    return $this->redirect($url.$option);
   }
 
 }

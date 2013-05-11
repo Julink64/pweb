@@ -1,0 +1,44 @@
+{% extends "PwebMainBundle::layout.html.twig" %}
+ 
+{% block title %}
+  Gérer les catégories
+{% endblock %}
+ 
+{% block PwebMain_body %}
+ 
+  <h2>Gérer les catégories</h2>
+<br></br>
+    <TABLE BORDER="0"> 
+  <TR> 
+ <TH>  </TH> 
+ <TH align="left"> Nom de la catégorie </TH> 
+ <TH align="left"> Renommer la catégorie </TH> 
+ <TH align="left"> Supprimer cette catégorie sans supprimer les articles liés </TH> 
+ <TH align="left"> Supprimer cette catégorie ainsi que les articles liés </TH> 
+  </TR> 
+      <TR> 
+ <TH align="left"> Id de la catégorie  </TH> 
+ <TD>  </TD> 
+ <TD>  </TD> 
+ <TD>  </TD> 
+ <TD> </TD> 
+  </TR> 
+  {% for categorie in liste_categories %}
+    <TR> 
+ <TH> {{ categorie.id }} </TH> 
+ <TD> {{ categorie.libellecategorie }} </TD> 
+ <TD align="center"> <a href="#" class="btn btn-info btn-small"><i class="icon-th-list"></i> Renommer</a> </TD> 
+ <TD align="center"> <a href="#" class="btn btn-warning btn-small"><i class="icon-warning-sign"></i> Supprimer cette Categorie</a> </TD> 
+ <TD align="center"> <a href="#" class="btn btn-danger btn-small"><i class="icon-white icon-warning-sign"></i><i class="icon-white icon-warning-sign"></i> Supprimer cette Categorie + Articles liés</a> </TD> 
+  </TR> 
+  {% endfor %}
+</TABLE> 
+
+
+<br></br>
+  <center>
+  <a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i> Retour à l'accueil</a>
+  <a href="{{ path('PwebMain_initialisecategories') }}" class="btn btn-success btn-large"><i class="icon-white icon-plus"></i> Ajouter les catégories par défaut</a>
+  <a href="{{ path('PwebMain_initialiseclear') }}" class="btn btn-danger btn-large"><i class="icon-white icon-flag"></i> Tout Supprimer</a>
+  </center>
+{% endblock %}

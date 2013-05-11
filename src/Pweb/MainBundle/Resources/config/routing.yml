@@ -3,24 +3,29 @@
 
 PwebMain_accueil:
     path:      /
-    defaults:  { _controller: PwebMainBundle:Main:index, page: 1 }
+    defaults:  { _controller: PwebMainBundle:Main:index }
+
+PwebMain_triprixcroissant:
+    path:      /triprixcroissant
+    defaults:  { _controller: PwebMainBundle:Main:indextriprixcroissant }
+
+PwebMain_triprixdecroissant:
+    path:      /triprixdecroissant
+    defaults:  { _controller: PwebMainBundle:Main:indextriprixdecroissant }
+
+PwebMain_trirecent:
+    path:      /trirecent
+    defaults:  { _controller: PwebMainBundle:Main:indextrirecent }
 
 # ------------------------------------------------------------------------------
-# VOIR ARTICLE
+# VOIR UN PRODUIT
 
 PwebMain_voir:
     path:      /article/{id}
     defaults:  { _controller: PwebMainBundle:Main:voir }
-     
-PwebMain_voir_slug:
-    path:      /{annee}/{slug}.{format}
-    defaults:  { _controller: PwebMainBundle:Main:voirSlug, format: html }
-    requirements:
-        annee:  \d{4}
-        format: html|xml
 
 # ------------------------------------------------------------------------------
-# AJOUTER, MODIFIER, SUPPRIMMER
+# COMMANDES ADMINISTRATEUR : AJOUTER, MODIFIER, SUPPRIMMER, GERER, VALIDER
         
 PwebMain_ajouter:
     path:      /ajouter
@@ -38,23 +43,16 @@ PwebMain_supprimer:
     requirements:
         id:  \d+
 
-# ------------------------------------------------------------------------------
-# INITIALISER
+PwebMain_categoriesgerer:
+    path:      /categories/gerer
+    defaults:  { _controller: PwebMainBundle:Main:categoriesgerer }
 
-PwebMain_initialiseproduits:
-    path:      /initialiser/produits
-    defaults:  { _controller: PwebMainBundle:Main:initialiseproduits }
-
-PwebMain_initialisecategories:
-    path:      /initialiser/categories
-    defaults:  { _controller: PwebMainBundle:Main:initialisecategories }
-    
-PwebMain_initialiseclear:
-    path:      /initialiser/clear
-    defaults:  { _controller: PwebMainBundle:Main:initialiseclear }
+PwebMain_statut:
+    path:      /commandes/statut
+    defaults:  { _controller: PwebMainBundle:Main:statut }
 
 # ------------------------------------------------------------------------------
-# ESPACE CLIENT
+# ESPACE CLIENT, PANIER, VALIDATION
 
 PwebMain_espaceclient:
     path:      /espaceclient
@@ -71,3 +69,22 @@ PwebMain_connecter:
 PwebMain_enregistrer:
     path:      /enregistrer
     defaults:  { _controller: PwebMainBundle:Main:enregistrer }
+
+# ------------------------------------------------------------------------------
+# INITIALISER
+
+PwebMain_initialiseclear:
+    path:      /initialiser/clear
+    defaults:  { _controller: PwebMainBundle:Main:initialiseclear }
+
+PwebMain_initialisetruncatetable:
+    path:      /initialiser/truncatetable
+    defaults:  { _controller: PwebMainBundle:Main:initialisetruncatetable }
+    
+PwebMain_initialiseproduits:
+    path:      /initialiser/produits
+    defaults:  { _controller: PwebMainBundle:Main:initialiseproduits }
+
+PwebMain_initialisecategories:
+    path:      /initialiser/categories
+    defaults:  { _controller: PwebMainBundle:Main:initialisecategories }

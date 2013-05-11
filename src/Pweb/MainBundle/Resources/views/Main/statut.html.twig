@@ -1,0 +1,44 @@
+{% extends "PwebMainBundle::layout.html.twig" %}
+ 
+{% block title %}
+  Modifier le statut d’une commande
+{% endblock %}
+ 
+{% block PwebMain_body %}
+ 
+  <h2>Modifier les statuts</h2>
+<br></br>
+    <TABLE BORDER="0"> 
+  <TR> 
+ <TH>  </TH> 
+ <TH align="left"> Id de l'acheteur </TH> 
+ <TH align="left"> Liste des produits achetés </TH> 
+ <TH align="left"> Statut actuel </TH> 
+ <TH align="left"> Modifier le statut </TH> 
+  </TR> 
+      <TR> 
+ <TH align="left"> Id de la commande  </TH> 
+ <TD>  </TD> 
+ <TD>  </TD> 
+ <TD>  </TD> 
+ <TD> </TD> 
+  </TR> 
+  {% for commande in liste_commandes %}
+    <TR> 
+ <TH> {{ commande.idcommande }} </TH> 
+ <TD> {{ commande.idacheteur }} </TD> 
+ <TD> {{ commande.idproduit }} </TD> 
+ <TD> {{ commande.statut }} </TD> 
+ <TD align="center"> <a href="#" class="btn btn-info btn-small"><i class="icon-th-list"></i> Modifier le statut</a> </TD> 
+ </TR> 
+  {% endfor %}
+</TABLE> 
+
+
+<br></br>
+  <center>
+  <a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i> Retour à l'accueil</a>
+  <a href="#" class="btn btn-success btn-large"><i class="icon-white icon-plus"></i> Ajouter des commandes de test</a>
+  <a href="{{ path('PwebMain_initialiseclear') }}" class="btn btn-danger btn-large"><i class="icon-white icon-flag"></i> Tout Supprimer</a>
+  </center>
+{% endblock %}
