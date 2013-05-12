@@ -23,4 +23,12 @@ class UserController extends Controller
     return $this->render('PwebUserBundle:Main:panier.html.twig');
   }
 
+    public function profileAction()
+  {
+    if ($this->getRequest()->getMethod() == 'POST') {
+      $this->get('session')->getFlashBag()->add('info', 'profile');
+    }
+    return $this->render('PwebUserBundle:Main:profile.html.twig');
+  }
+
 }

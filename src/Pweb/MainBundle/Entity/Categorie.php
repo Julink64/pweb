@@ -25,6 +25,7 @@ class Categorie
      * @var string
      *
      * @ORM\Column(name="libelle_categorie", type="string", length=50)
+     * @ORM\JoinColumn(name="libelle_id", referencedColumnName="id", onDelete="SET NULL")
      */
     private $libelleCategorie;
 

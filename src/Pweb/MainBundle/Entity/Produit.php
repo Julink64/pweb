@@ -36,11 +36,10 @@ class Produit
     private $description;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="categorie", type="integer")
-     */
-    private $categorie;
+   * @ORM\ManyToMany(targetEntity="Pweb\MainBundle\Entity\Categorie", cascade={"all"})
+   * @ORM\JoinColumn(name="categorie_id", referencedColumnName="id", onDelete="SET NULL")
+   */
+  private $categories;
 
     /**
      * @var float
@@ -125,29 +124,6 @@ class Produit
     public function getDescription()
     {
         return $this->description;
-    }
-
-    /**
-     * Set categorie
-     *
-     * @param integer $categorie
-     * @return Produit
-     */
-    public function setCategorie($categorie)
-    {
-        $this->categorie = $categorie;
-    
-        return $this;
-    }
-
-    /**
-     * Get categorie
-     *
-     * @return integer 
-     */
-    public function getCategorie()
-    {
-        return $this->categorie;
     }
 
     /**
@@ -240,5 +216,46 @@ class Produit
     public function getLien()
     {
         return $this->lien;
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add categories
+     *
+     * @param \Pweb\MainBundle\Entity\Categorie $categories
+     * @return Produit
+     */
+    public function addCategorie(\Pweb\MainBundle\Entity\Categorie $categorie)
+    {
+        $this->categories[] = $categorie;
+
+        return $this;
+    }
+
+    /**
+     * Remove categories
+     *
+     * @param \Pweb\MainBundle\Entity\Categorie $categories
+     */
+    public function removeCategorie(\Pweb\MainBundle\Entity\Categorie $categorie)
+    {
+        $this->categories->removeElement($categorie);
+    }
+
+    /**
+     * Get categories
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCategories()
+    {
+        return $this->categories;
     }
 }

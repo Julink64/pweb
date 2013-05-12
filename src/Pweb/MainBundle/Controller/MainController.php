@@ -4,8 +4,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Pweb\MainBundle\Entity\Produit;
 use Pweb\MainBundle\Entity\Categorie;
-use Pweb\MainBundle\Entity\Acheteur;
-use Pweb\MainBundle\Entity\Commande;
+//use Pweb\MainBundle\Entity\Acheteur;
+//use Pweb\MainBundle\Entity\Commande;
 
 use JMS\SecurityExtraBundle\Annotation\Secure;
 
@@ -137,6 +137,9 @@ $nombre=15;
 # ------------------------------------------------------------------------------
 # COMMANDES ADMINISTRATEUR : AJOUTER, MODIFIER, SUPPRIMMER, GERER, VALIDER
 
+/**
+   * @Secure(roles="ROLE_ADMIN")
+*/
  public function ajouterAction()
   {
 	$prod = new Produit();
@@ -145,14 +148,13 @@ $nombre=15;
 	$formBuilder
 		
 		->add('libelle',		'text')
-		->add('categorie',		'integer')
-		->add('description',	'textarea')
+		//->add('categories',		'integer')
+		->add('description',            'textarea')
 		->add('prix',			'text')
 		->add('poids',			'text')
 		->add('photo',			'text')
 		->add('lien',			'text')
 		;
-
 	// Pour l'instant, pas de commentaires, catégories, etc., on les gérera plus tard
 	// À partir du formBuilder, on génère le formulaire
 	$form = $formBuilder->getForm();
@@ -185,13 +187,15 @@ $nombre=15;
 // Reste de la méthode qu'on avait déjà écrit
     if ($this->getRequest()->getMethod() == 'POST') {
       $this->get('session')->getFlashBag()->add('info', 'Article bien enregistré');
-      return $this->redirect( $this->generateUrl('PwebMain_voir', array('id' => $produit->getId())) );
+      return $this->redirect( $this->generateUrl('PwebMain_voir', array('id' => $this->getId())) );
     }
- 
+
     return $this->render('PwebMainBundle:Main:ajouter.html.twig', array(
 'form' => $form->createView(), ));
   }
-
+/**
+   * @Secure(roles="ROLE_ADMIN")
+*/
   public function modifierAction($id)
   {
     $em = $this->getDoctrine()
@@ -208,7 +212,9 @@ $nombre=15;
     return $this->render('PwebMainBundle:Main:modifier.html.twig', array(
       'produit'        => $produit));
   }
-  
+/**
+   * @Secure(roles="ROLE_ADMIN")
+*/
   public function modifierImageAction($id_article)
   {
   $em = $this->getDoctrine()->getManager();
@@ -218,7 +224,9 @@ $nombre=15;
  
   return new Response('OK');
   }
-
+/**
+   * @Secure(roles="ROLE_ADMIN")
+*/
   public function supprimerAction(Produit $produit)
   {
     // On crée un formulaire vide, qui ne contiendra que le champ CSRF
@@ -249,7 +257,84 @@ $nombre=15;
       'form'    => $form->createView()
     ));
   }
+/**
+   * @Secure(roles="ROLE_ADMIN")
+*/
+  public function ajoutercategoriesAction($id)  // Ajoute toutes les catégories visibles sur ce produit
+  {
+    // On récupère l'EntityManager
+    $em = $this->getDoctrine()
+               ->getManager();
+ 
+    // On récupère l'entité correspondant à l'id $id
+    $produit = $em->getRepository('PwebMainBundle:Produit')
+                  ->find($id);
+ 
+    if ($produit === null) {
+      throw $this->createNotFoundException('Produit[id='.$id.'] inexistant.');
+    }
+ 
+    // On récupère toutes les catégories :
+    $liste_categories = $em->getRepository('PwebMainBundle:Categorie')
+                           ->findAll();
+ 
+    // On boucle sur les catégories pour les lier à l'article
+    foreach($liste_categories as $categorie)
+    {
+      $produit->addCategorie($categorie);
+    }
 
+    // Inutile de persister l'article, on l'a récupéré avec Doctrine
+ 
+    // Étape 2 : On déclenche l'enregistrement
+    $em->flush();
+
+    return $this->redirect($this->generateUrl('PwebMain_voir', array('id' => $id)));
+  }
+
+/**
+   * @Secure(roles="ROLE_ADMIN")
+*/
+public function supprimercategoriesAction($id)  // Supprime toutes les catégories d'un produit
+  {
+    // On récupère l'EntityManager
+    $em = $this->getDoctrine()
+               ->getManager();
+ 
+    // On récupère l'entité correspondant à l'id $id
+    $produit = $em->getRepository('PwebMainBundle:Produit')
+                  ->find($id);
+ 
+    if ($produit === null) {
+      throw $this->createNotFoundException('Produit[id='.$id.'] inexistant.');
+    }
+
+    // On récupère toutes les catégories :
+    $liste_categories = $em->getRepository('PwebMainBundle:Categorie')
+                           ->findAll();
+     
+    // On enlève toutes ces catégories de l'article
+    foreach($liste_categories as $categorie)
+    {
+      // On fait appel à la méthode removeCategorie() dont on a parlé plus haut
+      // Attention ici, $categorie est bien une instance de Categorie, et pas seulement un id
+      $produit->removeCategorie($categorie);
+    }
+ 
+    // On n'a pas modifié les catégories : inutile de les persister
+     
+    // On a modifié la relation Article - Categorie
+    // Il faudrait persister l'entité propriétaire pour persister la relation
+    // Or l'article a été récupéré depuis Doctrine, inutile de le persister
+   
+    // On déclenche la modification
+    $em->flush();
+ 
+    return $this->redirect($this->generateUrl('PwebMain_voir', array('id' => $id)));
+  }
+/**
+   * @Secure(roles="ROLE_ADMIN")
+*/
   public function categoriesgererAction()
   {
 $nombre_cat=100;
@@ -265,7 +350,9 @@ $liste_cat = $this->getDoctrine()
     return $this->render('PwebMainBundle:Main:categoriesgerer.html.twig', array(
       'liste_categories' => $liste_cat));
   }
-
+/**
+   * @Secure(roles="ROLE_ADMIN")
+*/
   public function statutAction()
   {
 $nombre_comm=100;
@@ -293,6 +380,46 @@ $liste_comm = $this->getDoctrine()
     return $this->render('PwebMainBundle:Main:espaceclient.html.twig');
   }
   
+  public function connecterAction()
+  {
+    if ($this->getRequest()->getMethod() == 'POST') {
+      $this->get('session')->getFlashBag()->add('info', 'connexion');
+    }
+    $url = $this->generateUrl('PwebMain_accueil');
+    $option = 'login';
+    return $this->redirect($url.$option);
+  }
+
+  public function deconnecterAction()
+  {
+    if ($this->getRequest()->getMethod() == 'POST') {
+      $this->get('session')->getFlashBag()->add('info', 'deconnexion');
+    }
+    $url = $this->generateUrl('PwebMain_accueil');
+    $option = 'logout';
+    return $this->redirect($url.$option);
+  }
+
+  public function enregistrerAction()
+  {
+    if ($this->getRequest()->getMethod() == 'POST') {
+      $this->get('session')->getFlashBag()->add('info', 'connexion');
+    }
+    $url = $this->generateUrl('PwebMain_accueil');
+    $option = 'register';
+    return $this->redirect($url.$option);
+  }
+  
+  public function profileuserAction()
+  {
+    if ($this->getRequest()->getMethod() == 'POST') {
+      $this->get('session')->getFlashBag()->add('info', 'profileuser');
+    }
+    $url = $this->generateUrl('PwebMain_accueil');
+    $option = 'profile';
+    return $this->redirect($url.$option);
+  }
+  
   public function panierAction()
   {
       $nombre_comm=100;
@@ -309,34 +436,19 @@ $liste_comm = $this->getDoctrine()
       'liste_commandes' => $liste_comm));
   }
   
-  public function connecterAction()
-  {
-    if ($this->getRequest()->getMethod() == 'POST') {
-      $this->get('session')->getFlashBag()->add('info', 'connexion');
-    }
-    $url = $this->generateUrl('PwebMain_accueil');
-    $option = 'login';
-    return $this->redirect($url.$option);
-  }
-
-  public function enregistrerAction()
-  {
-    if ($this->getRequest()->getMethod() == 'POST') {
-      $this->get('session')->getFlashBag()->add('info', 'connexion');
-    }
-    $url = $this->generateUrl('PwebMain_accueil');
-    $option = 'register';
-    return $this->redirect($url.$option);
-  }
-
 # ------------------------------------------------------------------------------
 # INITIALISER
 
+/**
+ * @Secure(roles="ROLE_ADMIN")
+ */
   public function initialiseclearAction()
   {
       return $this->render('PwebMainBundle:Main:initialiseclear.html.twig');
   }
-
+/**
+   * @Secure(roles="ROLE_ADMIN")
+*/
   public function initialisetruncatetableAction()
   {
 // MySQL will not be able to truncate any table once it has a foreign key constraint.
@@ -357,7 +469,9 @@ $connection->executeUpdate($platform->getTruncateTableSQL('Acheteur', true /* wh
 
     return $this->redirect($this->generateUrl('PwebMain_accueil'));
   }
-  
+/**
+   * @Secure(roles="ROLE_ADMIN")
+*/
   public function initialiseproduitsAction()
   {
     $em=$this->getDoctrine()->getManager();
@@ -367,17 +481,18 @@ $connection->executeUpdate($platform->getTruncateTableSQL('Acheteur', true /* wh
     $article1 = new Produit();
     $article1->setLibelle('BigMac');
     $article1->setDescription('Le Big Mac est un hamburger vendu par la chaîne de restauration rapide McDonald\'s depuis 1968. Il a apparemment été inspiré par un hamburger similaire à deux étages vendu par la chaîne Big Boy depuis 1936.');
-    $article1->setCategorie('3');
+    //$article1->addCategorie('3');
+    //$article1->setCategories('3');
     $article1->setPrix('6.05');
     $article1->setPoids('180');
     $article1->setPhoto(str_replace('app_dev.php/','Produits/BigMac.png',$url));
     $article1->setLien('http://www.mcdonalds.fr');
     $em->persist($article1);
-    
+
     $article2 = new Produit();
     $article2->setLibelle('Galaxy S4');
     $article2->setDescription('Le smartphone serait doté d\'un écran 5 pouces 1080p d\'une densité de 440 points par pouce avec le un SoC Exynos quadruple coeur 2 GHz (ou peut-être même l\'Exynos 5 octuple coeurs), 2 Go de RAM et un capteur photo de 13 megapixels.');
-    $article2->setCategorie('1');
+    //$article2->setCategories('1');
     $article2->setPrix('634.14');
     $article2->setPoids('110');
     $article2->setPhoto(str_replace('app_dev.php/','Produits/GalaxyS4.jpg',$url));
@@ -387,7 +502,7 @@ $connection->executeUpdate($platform->getTruncateTableSQL('Acheteur', true /* wh
     $article3 = new Produit();
     $article3->setLibelle('Porsche Cayenne Diesel V6');
     $article3->setDescription('Toit panoramique, Rampes de pavillon avec barrettes de protection en AluDesign mat, Hayon automatique, Caméra de recul incluant l\' assistance parking AV/AR, Phares Bi xénon avec Porsche Dynamic Light System (PDLS).');
-    $article3->setCategorie('2');
+    //$article3->setCategories('2');
     $article3->setPrix('97405.34');
     $article3->setPoids('2467943');
     $article3->setPhoto(str_replace('app_dev.php/','Produits/Porsche.jpg',$url));
@@ -397,7 +512,7 @@ $connection->executeUpdate($platform->getTruncateTableSQL('Acheteur', true /* wh
     $article4 = new Produit();
     $article4->setLibelle('Iphone 6');
     $article4->setDescription('D’ici quelques semaines, Apple dévoilera enfin son nouveau smartphone au sujet duquel on ne sait pour le moment presque rien, voire rien du tout. Une chose cependant est certaine, iOS7 sera de la partie et proposera de nombreuses nouveautés pour améliorer l’expérience utilisateur.');
-    $article4->setCategorie('1');
+    //$article4->setCategories('1');
     $article4->setPrix('654.45');
     $article4->setPoids('107');
     $article4->setPhoto(str_replace('app_dev.php/','Produits/iPhone-6.png',$url));
@@ -407,7 +522,7 @@ $connection->executeUpdate($platform->getTruncateTableSQL('Acheteur', true /* wh
     $article5 = new Produit();
     $article5->setLibelle('F-22 Raptor');
     $article5->setDescription('Le F-22 Raptor est un avion de chasse de cinquième génération propulsé par deux turboréacteurs Pratt & Whitney F-119-PW-100 à postcombustion d’une poussée unitaire d’environ 35 000 lbf, soit 156 kN. Pour comparaison, la poussée des avions de chasse McDonnell Douglas F-15 Eagle et General Dynamics F-16 Falcon est comprise entre 23 000 et 29 000 lbf.');
-    $article5->setCategorie('4');
+    //$article5->setCategories('4');
     $article5->setPrix('350000000.00');
     $article5->setPoids('27000000');
     $article5->setPhoto(str_replace('app_dev.php/','Produits/f22.jpg',$url));
@@ -430,17 +545,32 @@ Smart Energy Saving Plus
 Fonction CI+
 Design Ultra Fin
 Fréquence de 200 Hz (MCI) ');
-    $article6->setCategorie('5');
+    //$article6->setCategories('5');
     $article6->setPrix('849.00');
     $article6->setPoids('21900');
     $article6->setPhoto(str_replace('app_dev.php/','Produits/tv.jpg',$url));
     $article6->setLien('http://www.lg.com/fr');
     $em->persist($article6);
 
+    $article7 = new Produit();
+    $article7->setLibelle('Batman - The Dark Knight');
+    $article7->setDescription('
+Cet opus décrit la confrontation entre Batman, interprété pour la seconde fois par Christian Bale, et son ennemi juré le Joker, joué par Heath Ledger qui est décédé le 22 janvier 2008, avant la sortie du film.
+Dans la continuité de cette série de films, il s\'agit de leur première rencontre, quoique légèrement annoncée à la fin de Batman Begins.        
+');
+    //$article7->setCategories('5');
+    $article7->setPrix('10.40');
+    $article7->setPoids('18');
+    $article7->setPhoto(str_replace('app_dev.php/','Produits/batman.jpg',$url));
+    $article7->setLien('http://www.allocine.fr/film/fichefilm_gen_cfilm=132874.html');
+    $em->persist($article7);
+
     $em->flush();
     return $this->render('PwebMainBundle:Main:initialiseproduits.html.twig');
 }
-  
+/**
+   * @Secure(roles="ROLE_ADMIN")
+*/
   public function initialisecategoriesAction()
   {
     $em=$this->getDoctrine()->getManager();
@@ -463,7 +593,7 @@ Fréquence de 200 Hz (MCI) ');
     $em->persist($categorie4);
     
     $categorie5 = new Categorie();
-    $categorie5->setLibelleCategorie('TV');
+    $categorie5->setLibelleCategorie('TV DVD');
     $em->persist($categorie5);
     
     $em->flush();

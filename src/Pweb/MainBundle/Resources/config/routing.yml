@@ -43,6 +43,14 @@ PwebMain_supprimer:
     requirements:
         id:  \d+
 
+PwebMain_ajoutercategories:
+    path:      /categories/ajouter/{id}
+    defaults:  { _controller: PwebMainBundle:Main:ajoutercategories }
+        
+PwebMain_supprimercategories:
+    path:      /categories/supprimer/{id}
+    defaults:  { _controller: PwebMainBundle:Main:supprimercategories }
+
 PwebMain_categoriesgerer:
     path:      /categories/gerer
     defaults:  { _controller: PwebMainBundle:Main:categoriesgerer }
@@ -58,17 +66,25 @@ PwebMain_espaceclient:
     path:      /espaceclient
     defaults:  { _controller: PwebMainBundle:Main:espaceclient }
 
-PwebMain_panier:
-    path:      /panier
-    defaults:  { _controller: PwebMainBundle:Main:panier }
-
 PwebMain_connecter:
     path:      /connecter
     defaults:  { _controller: PwebMainBundle:Main:connecter }
-    
+
+PwebMain_deconnecter:
+    path:      /deconnecter
+    defaults:  { _controller: PwebMainBundle:Main:deconnecter }
+
 PwebMain_enregistrer:
     path:      /enregistrer
     defaults:  { _controller: PwebMainBundle:Main:enregistrer }
+
+PwebMain_profileuser:
+    path:      /profileuser
+    defaults:  { _controller: PwebMainBundle:Main:profileuser }
+
+PwebMain_panier:
+    path:      /panier
+    defaults:  { _controller: PwebMainBundle:Main:panier }
 
 # ------------------------------------------------------------------------------
 # INITIALISER

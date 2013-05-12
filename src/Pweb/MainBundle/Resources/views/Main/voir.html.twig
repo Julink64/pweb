@@ -1,14 +1,13 @@
 {% extends "PwebMainBundle::layout.html.twig" %}
-
+ 
 {% block title %}
     Produits
 {% endblock %}
-
 {% block PwebMain_body %}
  
   <h2>{{ produit.libelle }}</h2>
     <br></br>
-{% if produit.photo is not null %}  
+  {% if produit.photo is not null %}  
     <a href="{{ produit.photo }}">
     <p align="center"><img src="{{ produit.photo }}" width="330" height="330" alt="Produit" align="center"/></p>
     </a>
@@ -24,7 +23,6 @@
 <h3>Caractéristiques techniques :</h3>
 <div class="well">
   <p>Libellé : {{ produit.libelle }}</p>
-  <p>Catégorie : {{ produit.categorie }}</p>
   <p>Prix : {{ produit.prix }} €</p>
   <p>Poids : {{ produit.poids }} g</p>
   <p>Photo : <a href="{{ produit.photo }}"> Voir cet article de plus près </a></p>
@@ -37,12 +35,32 @@
   <p>Prix total : {{ produit.prix }} + = </p>
   </div>
 
-  <center>
+{% if is_granted('ROLE_ADMIN') %}
+<a href="{{ path('PwebMain_ajoutercategories', {'id': produit.id}) }}" class="btn btn-mini"><i class="icon-plus"></i> Ajouter des categories à ce produit</a>
+<a href="{{ path('PwebMain_supprimercategories', {'id': produit.id}) }}" class="btn btn-mini"><i class="icon-minus"></i> Supprimer les catégories de ce produit</a>
+{% endif %}
+<h3>Catégories du produit :</h3>
+
+<div class="well">
+    <p>Ce produit appartient à <strong>{{ produit.categories.count }}</strong> catégories différentes.</p>
+  
+  {% if produit.categories.count > 0 %}
+    <ol>
+    {% for categorie in produit.categories %}
+      <li> {{ categorie.libellecategorie }} </li> 
+    {% endfor %}
+      </ol>
+  
+  {% elseif produit.categories.count == 0 %}
+    <p>Ce produit n'appartient à aucune catégorie</p>
+  {% endif %}
+  
+      
+  </div>
+<center>
   <p>
-    <a href="{{ path('PwebMain_accueil') }}" class="btn">
-      <i class="icon-chevron-left"></i>
-      Retour à la liste
-    </a>
+<a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i> Retour à l'accueil</a>
+{% if is_granted('ROLE_ADMIN') %}
     <a href="{{ path('PwebMain_modifier', {'id': produit.id}) }}" class="btn">
       <i class="icon-edit"></i>
       Modifier le produit
@@ -51,21 +69,10 @@
       <i class="icon-trash"></i>
       Supprimer le produit
     </a>
+{% endif %}
 <a href="{{ path('PwebMain_panier') }}" class="btn btn-info btn-large"><i class="icon-white icon-check"></i> Ajouter au panier</a> 
   </p>
  </center>
   
-  
-<!--
-<h3>Caractéristiques techniques :</h3>
-  <p>Libellé : {{ produit.libelle }}</p>
-  <p>Description : {{ produit.description }}</p>
-  <p>Catégorie : {{ produit.categorie }}</p>
-  <p>Prix : {{ produit.prix }} €</p>
-  <p>Poids : {{ produit.poids }} g</p>
-  <p>Photo : <a href="{{ produit.photo }}"> Voir cet article de plus près </a></p>
-  <p>Lien : <a href="{{ produit.lien }}"> Lien vers le fournisseur officiel </a></p>
--->
-  
-  
+
 {% endblock %}

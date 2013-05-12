@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
- 
+
     <title>{% block title %}Pweb{% endblock %}</title>
  
     {% block stylesheets %}
@@ -16,40 +16,93 @@
       <div id="header" class="hero-unit">
         <h1>Outil de vente en ligne</h1>
         <p>Application Symfony 2 : Outil de vente en ligne</p>
-<a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i></a>
-<a href="{{ path('PwebMain_espaceclient') }}" class="btn btn-success btn-large"><i class="icon-white icon-user"></i> Mon Espace Client</a>
-<a href="{{ path('PwebMain_enregistrer') }}" class="btn btn-success btn-large"><i class="icon-white icon-resize-small"></i> Pas encore inscrit ?</a>
-<a href="{{ path('PwebMain_panier') }}" class="btn btn-info btn-large"><i class="icon-white icon-user"></i> Mon panier</a>
-</div>
-                                        <!--
-                                        <div style="float:left">gauche</div>
-                                        <div style="float:right">droite</div>
-                                        <div style="clear:both">suite</div>
-                                        -->
+
+        
+        
+        
+        
+        
+        
+{% if is_granted('ROLE_ADMIN') %}
+    <a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i></a>
+    <a href="{{ path('PwebMain_deconnecter') }}" class="btn btn-success btn-large"><i class="icon-white icon-road"></i> Déconnection</a>
+    <a href="{{ path('PwebMain_profileuser') }}" class="btn btn-success btn-large"><i class="icon-white icon-user"></i> Profile</a>
+    <a href="{{ path('PwebMain_categoriesgerer') }}" class="btn btn-info btn-large"><i class="icon-white icon-th-list"></i> Catégories</a>
+    <a href="{{ path('PwebMain_statut') }}" class="btn btn-info btn-large"><i class="icon-white icon-pencil"></i> Gérer les commandes</a>
+    <a href="{{ path('PwebMain_ajouter') }}" class="btn btn-info btn-large"><i class="icon-white icon-pencil"></i> Ajouter</a>
+{% elseif is_granted('ROLE_USER') %}
+    <a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i></a>
+    <a href="{{ path('PwebMain_deconnecter') }}" class="btn btn-success btn-large"><i class="icon-white icon-road"></i> Se déconnecter</a>
+    <a href="{{ path('PwebMain_profileuser') }}" class="btn btn-success btn-large"><i class="icon-white icon-user"></i> Profile</a>
+    <a href="{{ path('PwebMain_espaceclient') }}" class="btn btn-success btn-large"><i class="icon-white icon-star-empty"></i> Espace client</a>
+    <a href="{{ path('PwebMain_panier') }}" class="btn btn-info btn-large"><i class="icon-white icon-gift"></i> Mon panier</a>
+{% else %}
+    <a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i></a>
+    <a href="{{ path('PwebMain_connecter') }}" class="btn btn-success btn-large"><i class="icon-white icon-user"></i> Se connecter</a>
+    <a href="{{ path('PwebMain_enregistrer') }}" class="btn btn-success btn-large"><i class="icon-white icon-resize-small"></i> Pas encore inscrit ?</a>
+{% endif %}
+        
+
+
+    
+
+    
+
+
+      </div>
       <div class="row">
     <div id="menu" class="span3">
-<h3>Administrateur</h3>
-          <ul class="nav nav-pills nav-stacked">
-            <li><a href="{{ path('PwebMain_initialiseproduits') }}">Ajouter produits par défaut</a></li>
-            <li><a href="{{ path('PwebMain_initialisecategories') }}">Ajouter catégories par défaut</a></li>
-            <li><a href="{{ path('PwebMain_ajouter') }}">Ajouter un produit</a></li>
-            <li><a href="{{ path('PwebMain_categoriesgerer') }}">Gérer les catégories</a></li>
-            <li><a href="{{ path('PwebMain_statut') }}">Modifier le statut d’une commande</a></li>
-            <li><a href="{{ path('PwebMain_initialiseclear') }}">Tout nettoyer</a></li>
-          </ul>
-                     
-          {{ render(controller("PwebMainBundle:Main:menu", {'nombre': 3})) }}
-        </div>
+
+
+        
+        
+        
+        
+        
+
+
+{% if is_granted('ROLE_ADMIN') %}
+    <h3>Administrateur</h3>
+    <ul class="nav nav-pills nav-stacked">
+        <li><a href="{{ path('PwebMain_ajouter') }}">Ajouter un produit</a></li>
+        <li><a href="{{ path('PwebMain_initialiseproduits') }}">Ajouter produits par défaut</a></li>
+        <li><a href="{{ path('PwebMain_initialisecategories') }}">Ajouter catégories par défaut</a></li>
+        <li><a href="{{ path('PwebMain_categoriesgerer') }}">Gérer les catégories</a></li>
+        <li><a href="{{ path('PwebMain_statut') }}">Modifier le statut des commandes</a></li>
+        <li><a href="{{ path('PwebMain_initialiseclear') }}">Tout nettoyer</a></li>
+    </ul>
+{% elseif is_granted('ROLE_USER') %}
+    <h3>Espace client</h3>
+    <ul class="nav nav-pills nav-stacked">
+        <li><a href="{{ path('PwebMain_espaceclient') }}">Mes commandes</a></li>
+        <li><a href="{{ path('PwebMain_panier') }}">Mon panier</a></li>
+        <li><a href="{{ path('PwebMain_profileuser') }}">Mon profile</a></li>
+        <li><a href="{{ path('PwebMain_deconnecter') }}">Déconnection</a></li>
+    </ul>
+{% else %}
+    <a href="{{ path('PwebMain_connecter') }}" class="btn btn-primary btn-mini"><i class="icon-white icon-user"></i>Non connecté</a>
+{% endif %}
+
+ 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+{{ render(controller("PwebMainBundle:Main:menu", {'nombre': 3})) }}
+        
+
+</div>
         <div id="content" class="span9">
           {% block body %}
           {% endblock %}
         </div>
       </div>
- 
-            
-
       <hr>
- 
       <footer>
         <p>All rights reserved © 2013</p>
       </footer>
@@ -63,3 +116,9 @@
  
   </body>
 </html>
+
+<!--
+<div style="float:left">gauche</div>
+<div style="float:right">droite</div>
+<div style="clear:both">suite</div>
+-->
