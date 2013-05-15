@@ -10,7 +10,7 @@
     <TABLE BORDER="0"> 
   <TR> 
  <TH>  </TH> 
- <TH align="center"> Apperçu</TH> 
+ <TH align="center"> Aperçu</TH> 
  <TH align="center"> Nom</TH> 
 
  <TH align="center"> Prix </TH> 
@@ -62,7 +62,23 @@
       
 <br></br>
 <center>
-<h2>Prix total du panier : 0 €</h2>
+<h2>Prix total du panier :</h2>
+{% set res=0 %}
+{% for produit in liste_produits %}
+{% set res=produit.prix+res %}
+{% endfor %}
+<h3>{{ res }} €<h3>
+</center>
+<br></br>
+
+<br></br>
+<center>
+<h2>Prix total du panier avec les frais de ports :</h2>
+{% set res=0 %}
+{% for produit in liste_produits %}
+{% set res=produit.prix+0.1*produit.poids+res %}
+{% endfor %}
+<h3>{{ res }} €<h3>
 </center>
 <br></br>
       
