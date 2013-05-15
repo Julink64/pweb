@@ -4,8 +4,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Pweb\MainBundle\Entity\Produit;
 use Pweb\MainBundle\Entity\Categorie;
-//use Pweb\MainBundle\Entity\Acheteur;
-//use Pweb\MainBundle\Entity\Commande;
+use Pweb\MainBundle\Entity\Commande;
+use Pweb\MainBundle\Entity\Panier;
 
 use JMS\SecurityExtraBundle\Annotation\Secure;
 
@@ -78,7 +78,7 @@ $nombre=15;
                   ->findBy(
                     array(),          // Pas de critère
                     array('id' => 'desc'), // Trie par id décroissant
-                    $nombre,         // On sélectionne $nombre articles
+                    $nombre,         // On sélectionne $nombre produits
                     0                // À partir du premier
                   );
       
@@ -89,14 +89,14 @@ $nombre=15;
 
   public function menuAction()
   {
-    $nombre_art=10;$nombre_cat=10;
-    $liste_art = $this->getDoctrine()
+    $nombre_prod=10;$nombre_cat=10;
+    $liste_prod = $this->getDoctrine()
                   ->getManager()
                   ->getRepository('PwebMainBundle:Produit')
                   ->findBy(
                     array(),          // Pas de critère
                     array('id' => 'desc'), // On trie par date décroissante
-                    $nombre_art,         // On sélectionne $nombre articles
+                    $nombre_prod,         // On sélectionne $nombre produits
                     0                // À partir du premier
                   );
     $liste_cat = $this->getDoctrine()
@@ -105,12 +105,12 @@ $nombre=15;
               ->findBy(
                 array(),          // Pas de critère
                 array('id' => 'desc'), // On trie par date décroissante
-                $nombre_cat,         // On sélectionne $nombre articles
+                $nombre_cat,         // On sélectionne $nombre catégories
                 0                // À partir du premier
               );
 
     return $this->render('PwebMainBundle:Main:menu.html.twig', array(
-      'liste_articles' => $liste_art,'liste_categories' => $liste_cat));
+      'liste_produits' => $liste_prod,'liste_categories' => $liste_cat));
   }
 
 # ------------------------------------------------------------------------------
@@ -166,19 +166,19 @@ $nombre=15;
 	if ($request->getMethod() == 'POST') {
 	
 		// On fait le lien Requête <-> Formulaire
-		// A partir de maintenant, la variable $article contient les valeurs entrées dans le formulaire par le visiteur
+		// A partir de maintenant, la variable $produit contient les valeurs entrées dans le formulaire par le visiteur
 		$form->bind($request);
 		
 		// On vérifie que les valeurs rentrées sont correctes
 		// (Nous verrons la validation des objets en détail dans le prochain chapitre)
 		if ($form->isValid()) {
 		
-			// On l'enregistre notre objet $article dans la base de données
+			// On l'enregistre notre objet $produit dans la base de données
 			$em = $this->getDoctrine()->getManager(); 
 			$em->persist($prod);
 			$em->flush();
 			
-			// On redirige vers la page de visualisation de l'article nouvellement créé
+			// On redirige vers la page de visualisation de le produit nouvellement créé
 			return $this->redirect($this->generateUrl('PwebMain_voir', array('id' => $prod->getId())));
 			
 		} 
@@ -186,7 +186,7 @@ $nombre=15;
 
 // Reste de la méthode qu'on avait déjà écrit
     if ($this->getRequest()->getMethod() == 'POST') {
-      $this->get('session')->getFlashBag()->add('info', 'Article bien enregistré');
+      $this->get('session')->getFlashBag()->add('info', 'Produit bien enregistré');
       return $this->redirect( $this->generateUrl('PwebMain_voir', array('id' => $this->getId())) );
     }
 
@@ -215,11 +215,11 @@ $nombre=15;
 /**
    * @Secure(roles="ROLE_ADMIN")
 */
-  public function modifierImageAction($id_article)
+  public function modifierImageAction($id_produit)
   {
   $em = $this->getDoctrine()->getManager();
-  $article = $em->getRepository('PwebMainBundle:Article')->find($id_article);
-  $article->getImage()->setUrl('test.png');
+  $produit = $em->getRepository('PwebMainBundle:Produit')->find($id_produit);
+  $produit->getImage()->setUrl('test.png');
   $em->flush();
  
   return new Response('OK');
@@ -230,7 +230,7 @@ $nombre=15;
   public function supprimerAction(Produit $produit)
   {
     // On crée un formulaire vide, qui ne contiendra que le champ CSRF
-    // Cela permet de protéger la suppression d'article contre cette faille
+    // Cela permet de protéger la suppression d'un produit contre cette faille
     $form = $this->createFormBuilder()->getForm();
 
     $request = $this->getRequest();
@@ -238,7 +238,7 @@ $nombre=15;
       $form->bind($request);
 
       if ($form->isValid()) { // Ici, isValid ne vérifie donc que le CSRF
-        // On supprime l'article
+        // On supprime le produit
         $em = $this->getDoctrine()->getManager();
         $em->remove($produit);
         $em->flush();
@@ -277,14 +277,14 @@ $nombre=15;
     // On récupère toutes les catégories :
     $liste_categories = $em->getRepository('PwebMainBundle:Categorie')
                            ->findAll();
- 
-    // On boucle sur les catégories pour les lier à l'article
+
+    // On boucle sur les catégories pour les lier à le produit
     foreach($liste_categories as $categorie)
     {
       $produit->addCategorie($categorie);
     }
 
-    // Inutile de persister l'article, on l'a récupéré avec Doctrine
+    // Inutile de persister le produit, on l'a récupéré avec Doctrine
  
     // Étape 2 : On déclenche l'enregistrement
     $em->flush();
@@ -313,7 +313,7 @@ public function supprimercategoriesAction($id)  // Supprime toutes les catégori
     $liste_categories = $em->getRepository('PwebMainBundle:Categorie')
                            ->findAll();
      
-    // On enlève toutes ces catégories de l'article
+    // On enlève toutes ces catégories de le produit
     foreach($liste_categories as $categorie)
     {
       // On fait appel à la méthode removeCategorie() dont on a parlé plus haut
@@ -323,9 +323,9 @@ public function supprimercategoriesAction($id)  // Supprime toutes les catégori
  
     // On n'a pas modifié les catégories : inutile de les persister
      
-    // On a modifié la relation Article - Categorie
+    // On a modifié la relation Produit - Categorie
     // Il faudrait persister l'entité propriétaire pour persister la relation
-    // Or l'article a été récupéré depuis Doctrine, inutile de le persister
+    // Or le produit a été récupéré depuis Doctrine, inutile de le persister
    
     // On déclenche la modification
     $em->flush();
@@ -337,16 +337,10 @@ public function supprimercategoriesAction($id)  // Supprime toutes les catégori
 */
   public function categoriesgererAction()
   {
-$nombre_cat=100;
 $liste_cat = $this->getDoctrine()
   ->getManager()
   ->getRepository('PwebMainBundle:Categorie')
-  ->findBy(
-    array(),          // Pas de critère
-    array('id' => 'asc'), // On trie par date décroissante
-    $nombre_cat,         // On sélectionne $nombre articles
-    0                // À partir du premier
-  );
+  ->findAll();
     return $this->render('PwebMainBundle:Main:categoriesgerer.html.twig', array(
       'liste_categories' => $liste_cat));
   }
@@ -362,7 +356,7 @@ $liste_comm = $this->getDoctrine()
   ->findBy(
     array(),          // Pas de critère
     array('id' => 'asc'), // On trie par date décroissante
-    $nombre_comm,         // On sélectionne $nombre articles
+    $nombre_comm,         // On sélectionne $nombre produits
     0                // À partir du premier
   );
     return $this->render('PwebMainBundle:Main:statut.html.twig', array(
@@ -420,20 +414,72 @@ $liste_comm = $this->getDoctrine()
     return $this->redirect($url.$option);
   }
   
-  public function panierAction()
+  public function ajouterpanierAction($id)
   {
-      $nombre_comm=100;
-$liste_comm = $this->getDoctrine()
+      $em=$this->getDoctrine()->getManager();
+      $produit = $em->getRepository('PwebMainBundle:Produit')->find($id);
+          if($produit === null) {      throw $this->createNotFoundException('Produit[id='.$id.'] inexistant.');    }
+
+      $user = $this->container->get('security.context')->getToken()->getUser();
+      
+      $commande1=new Commande();
+      $commande1->setStatut('validé');
+      $commande1->setIdProduit($produit->getId());
+      $commande1->setIdAcheteur($user->getId());
+      $em->persist($commande1);
+      $em->flush();
+      
+  $liste_commande = $this->getDoctrine()
   ->getManager()
   ->getRepository('PwebMainBundle:Commande')
-  ->findBy(
-    array(),          // Pas de critère
-    array('id' => 'asc'), // On trie par date décroissante
-    $nombre_comm,         // On sélectionne $nombre articles
-    0                // À partir du premier
-  );
+  ->findAll();
+    return $this->render('PwebMainBundle:Main:panier.html.twig', array('liste_commande' => $liste_commande));
+  }
+  
+  public function ajouterproduitaupanierAction($idproduit)
+  {
+// On récupère le respository de Produit
+    $respository1=$this->getDoctrine()->getManager()->getRepository('PwebMainBundle:Produit');
+
+// A LA PLACE DE CREER UN NOUVEAU PANIER (chose faite quand l'utilisateur s'inscrit), IL FAUT
+// RECUPERER LE PANIER DE L'UTILISATEUR ACTUEL.
+    $panier=new Panier();
+    $panier->setIdproduit($idproduit);
+    $panier->setIdcommande('8');
+    
+// On trouve l'objet produit avec le bon id
+    $produit=$respository1->find($idproduit);
+    if($produit === null) {      throw $this->createNotFoundException('Produit[id='.$idproduit.'] inexistant.');    }
+
+// Mise à jours des données
+    $em = $this->getDoctrine()->getManager();
+    $em->persist($panier);
+    $em->flush();
+
+// On récupère la liste des Produits UNIQUEMENT dans le Panier
+    //$liste_produits = $this->getDoctrine()->getManager()->getRepository('PwebMainBundle:Produit')->findAll();
+    $nombre_prod=10;
+        $liste_produits = $this->getDoctrine()
+                  ->getManager()
+                  ->getRepository('PwebMainBundle:Produit')
+                  ->findBy(
+                    array('idpanier' => '0'),          // Pas de critère
+                    array('id' => 'desc'), // On trie par date décroissante
+                    $nombre_prod,         // On sélectionne $nombre produits
+                    0                // À partir du premier
+                  );
+    
+    
+    return $this->render('PwebMainBundle:Main:panier.html.twig', array('liste_produits' => $liste_produits));
+  }
+  
+  public function panierAction()
+  {
+// On récupère la liste des Produits UNIQUEMENT dans le Panier
+    $liste_produits = $this->getDoctrine()->getManager()->getRepository('PwebMainBundle:Produit')->findAll();
+
     return $this->render('PwebMainBundle:Main:panier.html.twig', array(
-      'liste_commandes' => $liste_comm));
+      'liste_produits' => $liste_produits));
   }
   
 # ------------------------------------------------------------------------------
@@ -478,60 +524,60 @@ $connection->executeUpdate($platform->getTruncateTableSQL('Acheteur', true /* wh
     $url = $this->generateUrl('PwebMain_accueil');
 
 // Produits
-    $article1 = new Produit();
-    $article1->setLibelle('BigMac');
-    $article1->setDescription('Le Big Mac est un hamburger vendu par la chaîne de restauration rapide McDonald\'s depuis 1968. Il a apparemment été inspiré par un hamburger similaire à deux étages vendu par la chaîne Big Boy depuis 1936.');
-    //$article1->addCategorie('3');
-    //$article1->setCategories('3');
-    $article1->setPrix('6.05');
-    $article1->setPoids('180');
-    $article1->setPhoto(str_replace('app_dev.php/','Produits/BigMac.png',$url));
-    $article1->setLien('http://www.mcdonalds.fr');
-    $em->persist($article1);
+    $produit1 = new Produit();
+    $produit1->setLibelle('BigMac');
+    $produit1->setDescription('Le Big Mac est un hamburger vendu par la chaîne de restauration rapide McDonald\'s depuis 1968. Il a apparemment été inspiré par un hamburger similaire à deux étages vendu par la chaîne Big Boy depuis 1936.');
+    //$produit1->addCategorie('3');
+    //$produit1->setCategories('3');
+    $produit1->setPrix('6.05');
+    $produit1->setPoids('225');
+    $produit1->setPhoto(str_replace('app_dev.php/','Produits/BigMac.png',$url));
+    $produit1->setLien('http://www.mcdonalds.fr');
+    $em->persist($produit1);
 
-    $article2 = new Produit();
-    $article2->setLibelle('Galaxy S4');
-    $article2->setDescription('Le smartphone serait doté d\'un écran 5 pouces 1080p d\'une densité de 440 points par pouce avec le un SoC Exynos quadruple coeur 2 GHz (ou peut-être même l\'Exynos 5 octuple coeurs), 2 Go de RAM et un capteur photo de 13 megapixels.');
-    //$article2->setCategories('1');
-    $article2->setPrix('634.14');
-    $article2->setPoids('110');
-    $article2->setPhoto(str_replace('app_dev.php/','Produits/GalaxyS4.jpg',$url));
-    $article2->setLien('http://www.galaxys4.fr');
-    $em->persist($article2);
+    $produit2 = new Produit();
+    $produit2->setLibelle('Galaxy S4');
+    $produit2->setDescription('Le smartphone serait doté d\'un écran 5 pouces 1080p d\'une densité de 440 points par pouce avec le un SoC Exynos quadruple coeur 2 GHz (ou peut-être même l\'Exynos 5 octuple coeurs), 2 Go de RAM et un capteur photo de 13 megapixels.');
+    //$produit2->setCategories('1');
+    $produit2->setPrix('634.14');
+    $produit2->setPoids('110');
+    $produit2->setPhoto(str_replace('app_dev.php/','Produits/GalaxyS4.jpg',$url));
+    $produit2->setLien('http://www.galaxys4.fr');
+    $em->persist($produit2);
 
-    $article3 = new Produit();
-    $article3->setLibelle('Porsche Cayenne Diesel V6');
-    $article3->setDescription('Toit panoramique, Rampes de pavillon avec barrettes de protection en AluDesign mat, Hayon automatique, Caméra de recul incluant l\' assistance parking AV/AR, Phares Bi xénon avec Porsche Dynamic Light System (PDLS).');
-    //$article3->setCategories('2');
-    $article3->setPrix('97405.34');
-    $article3->setPoids('2467943');
-    $article3->setPhoto(str_replace('app_dev.php/','Produits/Porsche.jpg',$url));
-    $article3->setLien('http://www.porsche.com/france/');
-    $em->persist($article3);
+    $produit3 = new Produit();
+    $produit3->setLibelle('Porsche Cayenne Diesel V6');
+    $produit3->setDescription('Toit panoramique, Rampes de pavillon avec barrettes de protection en AluDesign mat, Hayon automatique, Caméra de recul incluant l\' assistance parking AV/AR, Phares Bi xénon avec Porsche Dynamic Light System (PDLS).');
+    //$produit3->setCategories('2');
+    $produit3->setPrix('97405.34');
+    $produit3->setPoids('2467943');
+    $produit3->setPhoto(str_replace('app_dev.php/','Produits/Porsche.jpg',$url));
+    $produit3->setLien('http://www.porsche.com/france/');
+    $em->persist($produit3);
     
-    $article4 = new Produit();
-    $article4->setLibelle('Iphone 6');
-    $article4->setDescription('D’ici quelques semaines, Apple dévoilera enfin son nouveau smartphone au sujet duquel on ne sait pour le moment presque rien, voire rien du tout. Une chose cependant est certaine, iOS7 sera de la partie et proposera de nombreuses nouveautés pour améliorer l’expérience utilisateur.');
-    //$article4->setCategories('1');
-    $article4->setPrix('654.45');
-    $article4->setPoids('107');
-    $article4->setPhoto(str_replace('app_dev.php/','Produits/iPhone-6.png',$url));
-    $article4->setLien('http://www.terrafemina.com/culture/culture-web/articles/25462-iphone-6-ou-iphone-5s-le-plein-de-nouveautes-pour-ios7.html');
-    $em->persist($article4);
+    $produit4 = new Produit();
+    $produit4->setLibelle('Iphone 6');
+    $produit4->setDescription('D’ici quelques semaines, Apple dévoilera enfin son nouveau smartphone au sujet duquel on ne sait pour le moment presque rien, voire rien du tout. Une chose cependant est certaine, iOS7 sera de la partie et proposera de nombreuses nouveautés pour améliorer l’expérience utilisateur.');
+    //$produit4->setCategories('1');
+    $produit4->setPrix('654.45');
+    $produit4->setPoids('107');
+    $produit4->setPhoto(str_replace('app_dev.php/','Produits/iPhone-6.png',$url));
+    $produit4->setLien('http://www.terrafemina.com/culture/culture-web/articles/25462-iphone-6-ou-iphone-5s-le-plein-de-nouveautes-pour-ios7.html');
+    $em->persist($produit4);
     
-    $article5 = new Produit();
-    $article5->setLibelle('F-22 Raptor');
-    $article5->setDescription('Le F-22 Raptor est un avion de chasse de cinquième génération propulsé par deux turboréacteurs Pratt & Whitney F-119-PW-100 à postcombustion d’une poussée unitaire d’environ 35 000 lbf, soit 156 kN. Pour comparaison, la poussée des avions de chasse McDonnell Douglas F-15 Eagle et General Dynamics F-16 Falcon est comprise entre 23 000 et 29 000 lbf.');
-    //$article5->setCategories('4');
-    $article5->setPrix('350000000.00');
-    $article5->setPoids('27000000');
-    $article5->setPhoto(str_replace('app_dev.php/','Produits/f22.jpg',$url));
-    $article5->setLien('http://info-aviation.com/?p=14120');
-    $em->persist($article5);
+    $produit5 = new Produit();
+    $produit5->setLibelle('F-22 Raptor');
+    $produit5->setDescription('Le F-22 Raptor est un avion de chasse de cinquième génération propulsé par deux turboréacteurs Pratt & Whitney F-119-PW-100 à postcombustion d’une poussée unitaire d’environ 35 000 lbf, soit 156 kN. Pour comparaison, la poussée des avions de chasse McDonnell Douglas F-15 Eagle et General Dynamics F-16 Falcon est comprise entre 23 000 et 29 000 lbf.');
+    //$produit5->setCategories('4');
+    $produit5->setPrix('350000000.00');
+    $produit5->setPoids('27000000');
+    $produit5->setPhoto(str_replace('app_dev.php/','Produits/f22.jpg',$url));
+    $produit5->setLien('http://info-aviation.com/?p=14120');
+    $em->persist($produit5);
     
-    $article6 = new Produit();
-    $article6->setLibelle('Téléviseur LED 3D - 16/9 - 140cm - HDTV 1080p');
-    $article6->setDescription('Résolution HDTV 1080p
+    $produit6 = new Produit();
+    $produit6->setLibelle('Téléviseur LED 3D - 16/9 - 140cm - HDTV 1080p');
+    $produit6->setDescription('Résolution HDTV 1080p
 Contraste Dynamique : 5 000 000:1
 Cinema 3D pour tous. Partagez les films 3D avec vos proches sans contrainte!
 Transformez tous vos contenus 2D en 3D
@@ -545,25 +591,25 @@ Smart Energy Saving Plus
 Fonction CI+
 Design Ultra Fin
 Fréquence de 200 Hz (MCI) ');
-    //$article6->setCategories('5');
-    $article6->setPrix('849.00');
-    $article6->setPoids('21900');
-    $article6->setPhoto(str_replace('app_dev.php/','Produits/tv.jpg',$url));
-    $article6->setLien('http://www.lg.com/fr');
-    $em->persist($article6);
+    //$produit6->setCategories('5');
+    $produit->setPrix('849.00');
+    $produit6->setPoids('21900');
+    $produit6->setPhoto(str_replace('app_dev.php/','Produits/tv.jpg',$url));
+    $produit6->setLien('http://www.lg.com/fr');
+    $em->persist($produit6);
 
-    $article7 = new Produit();
-    $article7->setLibelle('Batman - The Dark Knight');
-    $article7->setDescription('
+    $produit7 = new Produit();
+    $produit7->setLibelle('Batman - The Dark Knight');
+    $produit7->setDescription('
 Cet opus décrit la confrontation entre Batman, interprété pour la seconde fois par Christian Bale, et son ennemi juré le Joker, joué par Heath Ledger qui est décédé le 22 janvier 2008, avant la sortie du film.
 Dans la continuité de cette série de films, il s\'agit de leur première rencontre, quoique légèrement annoncée à la fin de Batman Begins.        
 ');
-    //$article7->setCategories('5');
-    $article7->setPrix('10.40');
-    $article7->setPoids('18');
-    $article7->setPhoto(str_replace('app_dev.php/','Produits/batman.jpg',$url));
-    $article7->setLien('http://www.allocine.fr/film/fichefilm_gen_cfilm=132874.html');
-    $em->persist($article7);
+    //$produit7->setCategories('5');
+    $produit7->setPrix('10.40');
+    $produit7->setPoids('18');
+    $produit7->setPhoto(str_replace('app_dev.php/','Produits/batman.jpg',$url));
+    $produit7->setLien('http://www.allocine.fr/film/fichefilm_gen_cfilm=132874.html');
+    $em->persist($produit7);
 
     $em->flush();
     return $this->render('PwebMainBundle:Main:initialiseproduits.html.twig');

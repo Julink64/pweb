@@ -69,6 +69,33 @@ class Produit
      */
     private $lien;
 
+    /**
+   * @ORM\ManyToOne(targetEntity="Pweb\MainBundle\Entity\Panier", cascade={"all"})
+   *    * @ORM\JoinColumn(name="panier_id", referencedColumnName="id", onDelete="SET NULL")
+   */
+  private $idpanier;
+  
+
+  /**
+   * Set panier
+   *
+   * @param Pweb\MainBundle\Entity\Panier $panier
+   */
+  public function setPanier(Pweb\MainBundle\Entity\Produit $idpanier)
+  {
+    $this->panier = $idpanier;
+  }
+ 
+  /**
+   * Get panier
+   *
+   * @return Pweb\MainBundle\Entity\Panier 
+   */
+  public function getPanier()
+  {
+    return $this->idpanier;
+  }
+
 
     /**
      * Get id

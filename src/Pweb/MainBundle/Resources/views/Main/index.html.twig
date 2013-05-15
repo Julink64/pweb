@@ -13,7 +13,7 @@
 <a href="{{ path('PwebMain_trirecent') }}" class="btn btn-mini"><i class="icon-time"></i> Produits récents</a>
 <br></br>
 <ul>
-    {% for produit in produit %}
+{% for produit in produit %}
       <li>
         <a href="{{ path('PwebMain_voir', {'id': produit.id}) }}">{{ produit.libelle }}</a>
         disponible à partir de <strong>{{ produit.prix }} €</strong> seulement.<br></br>
@@ -22,9 +22,14 @@
     </a>
       </li>
       
-    {% else %}
+{% else %}
       <li>Il n'y a pas encore de produits disponibles.</li>
-    {% endfor %}
+{% endfor %}
   </ul>
- 
+
+<br></br>
+<center>
+<div style="float:left"><a href="#" class="btn btn-inverse btn-large"><i class="icon-white icon-arrow-left"></i> Produits précédents</a></div>
+<div style="float:right"><a href="#" class="btn btn-inverse btn-large">Produits suivants <i class="icon-white icon-arrow-right"></i></a></div>
+</center>
 {% endblock %}

@@ -6,18 +6,20 @@
  
 {% block PwebMain_body %}
  
-  <h2>Modifier les statuts</h2>
+  <h2>Gérer les commandes et les statuts</h2>
 <br></br>
     <TABLE BORDER="0"> 
   <TR> 
  <TH>  </TH> 
- <TH align="left"> Id de l'acheteur </TH> 
- <TH align="left"> Liste des produits achetés </TH> 
- <TH align="left"> Statut actuel </TH> 
- <TH align="left"> Modifier le statut </TH> 
+ <TH align="center"> Nom de l'acheteur </TH> 
+ <TH align="center"> Produits commandés </TH> 
+ <TH align="center"> Valider</TH> 
+ <TH align="center"> Envoyer</TH> 
+ <TH align="center"> Statut</TH> 
+ <TH align="center"> Supprimer la commande</TH> 
   </TR> 
       <TR> 
- <TH align="left"> Id de la commande  </TH> 
+ <TH align="center"> Id </TH> 
  <TD>  </TD> 
  <TD>  </TD> 
  <TD>  </TD> 
@@ -25,12 +27,15 @@
   </TR> 
   {% for commande in liste_commandes %}
     <TR> 
- <TH> {{ commande.idcommande }} </TH> 
- <TD> {{ commande.idacheteur }} </TD> 
- <TD> {{ commande.idproduit }} </TD> 
- <TD> {{ commande.statut }} </TD> 
- <TD align="center"> <a href="#" class="btn btn-info btn-small"><i class="icon-th-list"></i> Modifier le statut</a> </TD> 
- </TR> 
+ <TH> {{ commande.id }} </TH> 
+ <TD align="center"> {{ commande.idacheteur }} </TD> 
+ <TD align="center"> <a href="#" class="btn btn-inverse btn-small"><i class="icon-white icon-shopping-cart"></i> Panier</a> </TD> 
+ <TD align="center"><a href="#" class="btn btn-info btn-small"><i class="icon-white icon-ok"></i> Validée</a></TD> 
+ <TD align="center"><a href="#" class="btn btn-success btn-small"><i class="icon-white icon-road"></i> Envoyée</a></TD> 
+ <TD align="center"> {{ commande.statut }} </TD> 
+ <TD align="center"> <a href="#" class="btn btn-danger btn-small"><i class="icon-white icon-warning-sign"></i> Supprimer</a></TD> 
+ 
+    </TR> 
   {% endfor %}
 </TABLE> 
 

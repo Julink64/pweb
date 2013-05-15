@@ -12,7 +12,7 @@
 <h3>Les 10 derniers produits</h3>
 
 <ul class="nav nav-pills nav-stacked">
-  {% for produit in liste_articles %}
+  {% for produit in liste_produits %}
     <li><a href="{{ path('PwebMain_voir', {'id': produit.id}) }}">{{ produit.libelle }}</a></li>
   {% endfor %}
 </ul>

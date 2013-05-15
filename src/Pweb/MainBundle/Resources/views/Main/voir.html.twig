@@ -14,7 +14,6 @@
 {% endif %}
 
 <p align="center"><center><h2>{{ produit.prix }} € seulement ! <img src="http://localhost/Symfony/web/Produits/prix-choc.gif" width="90" height="90" alt="Prix choc" align="center"/></h2></center>
-<p align="center"></p>
 
 <h3>Description :</h3>
 <div class="well">
@@ -55,7 +54,7 @@
     <p>Ce produit n'appartient à aucune catégorie</p>
   {% endif %}
   
-      
+
   </div>
 <center>
   <p>
@@ -70,7 +69,7 @@
       Supprimer le produit
     </a>
 {% endif %}
-<a href="{{ path('PwebMain_panier') }}" class="btn btn-info btn-large"><i class="icon-white icon-check"></i> Ajouter au panier</a> 
+<a href="{{ path('PwebMain_ajouterpanier', {'idproduit': produit.id}) }}" class="btn btn-info btn-large"><i class="icon-white icon-check"></i> Ajouter au panier</a> 
   </p>
  </center>
   

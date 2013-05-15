@@ -19,27 +19,23 @@
 
         
         
-        
-        
-        
-        
 {% if is_granted('ROLE_ADMIN') %}
     <a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i></a>
-    <a href="{{ path('PwebMain_deconnecter') }}" class="btn btn-success btn-large"><i class="icon-white icon-road"></i> Déconnection</a>
+    <a href="{{ path('PwebMain_deconnecter') }}" class="btn btn-success btn-large"><i class="icon-white icon-resize-full"></i> Déconnection</a>
     <a href="{{ path('PwebMain_profileuser') }}" class="btn btn-success btn-large"><i class="icon-white icon-user"></i> Profile</a>
     <a href="{{ path('PwebMain_categoriesgerer') }}" class="btn btn-info btn-large"><i class="icon-white icon-th-list"></i> Catégories</a>
     <a href="{{ path('PwebMain_statut') }}" class="btn btn-info btn-large"><i class="icon-white icon-pencil"></i> Gérer les commandes</a>
     <a href="{{ path('PwebMain_ajouter') }}" class="btn btn-info btn-large"><i class="icon-white icon-pencil"></i> Ajouter</a>
 {% elseif is_granted('ROLE_USER') %}
     <a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i></a>
-    <a href="{{ path('PwebMain_deconnecter') }}" class="btn btn-success btn-large"><i class="icon-white icon-road"></i> Se déconnecter</a>
+    <a href="{{ path('PwebMain_deconnecter') }}" class="btn btn-success btn-large"><i class="icon-white icon-resize-full"></i> Se déconnecter</a>
     <a href="{{ path('PwebMain_profileuser') }}" class="btn btn-success btn-large"><i class="icon-white icon-user"></i> Profile</a>
     <a href="{{ path('PwebMain_espaceclient') }}" class="btn btn-success btn-large"><i class="icon-white icon-star-empty"></i> Espace client</a>
-    <a href="{{ path('PwebMain_panier') }}" class="btn btn-info btn-large"><i class="icon-white icon-gift"></i> Mon panier</a>
+    <a href="{{ path('PwebMain_panier') }}" class="btn btn-info btn-large"><i class="icon-white icon-shopping-cart"></i> Mon panier</a>
 {% else %}
     <a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i></a>
-    <a href="{{ path('PwebMain_connecter') }}" class="btn btn-success btn-large"><i class="icon-white icon-user"></i> Se connecter</a>
-    <a href="{{ path('PwebMain_enregistrer') }}" class="btn btn-success btn-large"><i class="icon-white icon-resize-small"></i> Pas encore inscrit ?</a>
+    <a href="{{ path('PwebMain_connecter') }}" class="btn btn-success btn-large"><i class="icon-white icon-resize-small"></i> Se connecter</a>
+    <a href="{{ path('PwebMain_enregistrer') }}" class="btn btn-success btn-large"><i class="icon-white icon-user"></i> Pas encore inscrit ?</a>
 {% endif %}
         
 

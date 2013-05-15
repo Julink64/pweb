@@ -5,9 +5,73 @@
 {% endblock %}
  
 {% block PwebMain_body %}
-  <h2>Mon panier</h2>
-  <br></br>
-<p>Le panier est vide.</p>
+<h2>Mon panier</h2>
+<br></br>
+    <TABLE BORDER="0"> 
+  <TR> 
+ <TH>  </TH> 
+ <TH align="center"> Apperçu</TH> 
+ <TH align="center"> Nom</TH> 
+
+ <TH align="center"> Prix </TH> 
+ <TH align="center"> Frais de port</TH> 
+ <TH align="center"> Prix total</TH> 
+  </TR> 
+<TR> 
+ <TH align="center"> Id</TH> 
+ <TD> </TD> 
+ <TD> </TD> 
+ <TD> </TD> 
+ <TD> </TD> 
+ <TD> </TD> 
+</TR> 
+  
+{% for produit in liste_produits %}
+
+    <TR> 
+ <TH> </TH> 
+ <TD> ---------- </TD> 
+ <TD>  </TD> 
+ <TD>  </TD> 
+ <TD> </TD> 
+ <TD> </TD> 
+</TR> 
+
+    <TR>
+ <TH align="center"> {{ produit.id }} </TH> 
+ <TH align="center"><a href="{{ path('PwebMain_voir', {'id': produit.id}) }}"><img src="{{ produit.photo }}" width="200" height="200" alt="Produit" align="center"/></a></TH> 
+ <TH align="center"> <a href="{{ path('PwebMain_voir', {'id': produit.id}) }}"> {{ produit.libelle }} </a></TH> 
+ <TD align="center"> <strong>{{ produit.prix }} €</strong></TD> 
+ <TD align="center"> {{ 0.1*produit.poids }} €</TD> 
+ <TD align="center"> <h3>{{ produit.prix + 0.1*produit.poids }} €</h3></TD> 
+    </TR> 
+
+    
+    
+{% else %}
+    <TD> Le panier est vide.</td>
+    <TD> Le panier est vide.</td>
+    <TD> Le panier est vide.</td>
+    <TD> Le panier est vide.</td>
+    <TD> Le panier est vide.</td>
+    <TD> Le panier est vide.</td>
+    
+{% endfor %}
+</TABLE> 
+      
+      
+<br></br>
+<center>
+<h2>Prix total du panier : 0 €</h2>
+</center>
+<br></br>
+      
+      
+      
+      
+      
+      
+      
   <center>
   <a href="{{ path('PwebMain_accueil') }}" class="btn btn-info btn-large"><i class="icon-white icon-home"></i> Continuer vos achats</a>
   </center>

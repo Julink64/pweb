@@ -86,6 +86,10 @@ PwebMain_panier:
     path:      /panier
     defaults:  { _controller: PwebMainBundle:Main:panier }
 
+PwebMain_ajouterpanier:
+    path:      /panier/ajouter/{idproduit}
+    defaults:  { _controller: PwebMainBundle:Main:ajouterproduitaupanier }
+
 # ------------------------------------------------------------------------------
 # INITIALISER
 

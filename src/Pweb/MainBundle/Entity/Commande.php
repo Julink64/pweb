@@ -24,23 +24,23 @@ class Commande
     /**
      * @var string
      *
-     * @ORM\Column(name="statut", type="string", length=10)
+     * @ORM\Column(name="statut", type="string", length=255)
      */
     private $statut;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="id_produit", type="integer")
+     * @ORM\Column(name="idpanier", type="integer")
      */
-    private $idProduit;
+    private $idpanier;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="id_acheteur", type="integer")
+     * @ORM\Column(name="idacheteur", type="integer")
      */
-    private $idAcheteur;
+    private $idacheteur;
 
 
     /**
@@ -62,7 +62,7 @@ class Commande
     public function setStatut($statut)
     {
         $this->statut = $statut;
-    
+
         return $this;
     }
 
@@ -77,48 +77,48 @@ class Commande
     }
 
     /**
-     * Set idProduit
+     * Set idpanier
      *
-     * @param integer $idProduit
+     * @param integer $idpanier
      * @return Commande
      */
-    public function setIdProduit($idProduit)
+    public function setIdpanier($idpanier)
     {
-        $this->idProduit = $idProduit;
-    
+        $this->idpanier = $idpanier;
+
         return $this;
     }
 
     /**
-     * Get idProduit
+     * Get idpanier
      *
      * @return integer 
      */
-    public function getIdProduit()
+    public function getIdpanier()
     {
-        return $this->idProduit;
+        return $this->idpanier;
     }
 
     /**
-     * Set idAcheteur
+     * Set idacheteur
      *
-     * @param integer $idAcheteur
+     * @param integer $idacheteur
      * @return Commande
      */
-    public function setIdAcheteur($idAcheteur)
+    public function setIdacheteur($idacheteur)
     {
-        $this->idAcheteur = $idAcheteur;
-    
+        $this->idacheteur = $idacheteur;
+
         return $this;
     }
 
     /**
-     * Get idAcheteur
+     * Get idacheteur
      *
      * @return integer 
      */
-    public function getIdAcheteur()
+    public function getIdacheteur()
     {
-        return $this->idAcheteur;
+        return $this->idacheteur;
     }
 }
