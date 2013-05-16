@@ -25,8 +25,8 @@ PwebMain_voir:
     defaults:  { _controller: PwebMainBundle:Main:voir }
 
 # ------------------------------------------------------------------------------
-# COMMANDES ADMINISTRATEUR : AJOUTER, MODIFIER, SUPPRIMMER, GERER, VALIDER
-        
+# ADMINISTRATEUR. PRODUIT : AJOUTER, SUPPRIMER, MODIFIER
+
 PwebMain_ajouter:
     path:      /ajouter
     defaults:  { _controller: PwebMainBundle:Main:ajouter }
@@ -43,6 +43,9 @@ PwebMain_supprimer:
     requirements:
         id:  \d+
 
+# ------------------------------------------------------------------------------
+# ADMINISTRATEUR. CATEGORIE : AJOUTER, SUPPRIMER, GERER
+
 PwebMain_ajoutercategories:
     path:      /categories/ajouter/{id}
     defaults:  { _controller: PwebMainBundle:Main:ajoutercategories }
@@ -55,9 +58,28 @@ PwebMain_categoriesgerer:
     path:      /categories/gerer
     defaults:  { _controller: PwebMainBundle:Main:categoriesgerer }
 
+# ------------------------------------------------------------------------------
+# ADMINISTRATEUR. COMMANDE : AJOUTER, SUPPRIMER, MODIFIER
+
+PwebMain_commandeajouter:
+    path:      /commandes/ajouter/{id}
+    defaults:  { _controller: PwebMainBundle:Main:commandeajouter }
+
+PwebMain_commandesupprimer:
+    path:      /commandes/supprimer/{id}
+    defaults:  { _controller: PwebMainBundle:Main:commandesupprimer }
+    
+PwebMain_commandetoutsupprimer:
+    path:      /commandes/toutsupprimer
+    defaults:  { _controller: PwebMainBundle:Main:commandetoutsupprimer }
+
 PwebMain_statut:
     path:      /commandes/statut
     defaults:  { _controller: PwebMainBundle:Main:statut }
+
+PwebMain_commandevoirproduits:
+    path:      /commandes/{idcommande}/panier
+    defaults:  { _controller: PwebMainBundle:Main:commandevoirproduits }
 
 # ------------------------------------------------------------------------------
 # ESPACE CLIENT, PANIER, VALIDATION
@@ -108,3 +130,7 @@ PwebMain_initialiseproduits:
 PwebMain_initialisecategories:
     path:      /initialiser/categories
     defaults:  { _controller: PwebMainBundle:Main:initialisecategories }
+
+PwebMain_initialisecommandes:
+    path:      /initialiser/commandes
+    defaults:  { _controller: PwebMainBundle:Main:initialisecommandes }

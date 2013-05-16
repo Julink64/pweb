@@ -5,9 +5,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Pweb\MainBundle\Entity\Produit;
 use Pweb\MainBundle\Entity\Categorie;
 use Pweb\MainBundle\Entity\Commande;
-use Pweb\MainBundle\Entity\Panier;
+use Pweb\MainBundle\Entity\CommandeProduit;
 
 use JMS\SecurityExtraBundle\Annotation\Secure;
+//use Symfony\Component\Security\Core\Util\SecureRandom;
 
 
 class MainController extends Controller
@@ -135,7 +136,7 @@ $nombre=15;
 }
 
 # ------------------------------------------------------------------------------
-# COMMANDES ADMINISTRATEUR : AJOUTER, MODIFIER, SUPPRIMMER, GERER, VALIDER
+# ADMINISTRATEUR. PRODUIT : AJOUTER, SUPPRIMER, MODIFIER
 
 /**
    * @Secure(roles="ROLE_ADMIN")
@@ -257,7 +258,11 @@ $nombre=15;
       'form'    => $form->createView()
     ));
   }
-/**
+
+# ------------------------------------------------------------------------------
+# ADMINISTRATEUR. CATEGORIE : AJOUTER, SUPPRIMER, GERER
+  
+  /**
    * @Secure(roles="ROLE_ADMIN")
 */
   public function ajoutercategoriesAction($id)  // Ajoute toutes les catégories visibles sur ce produit
@@ -291,19 +296,17 @@ $nombre=15;
 
     return $this->redirect($this->generateUrl('PwebMain_voir', array('id' => $id)));
   }
-
+  
 /**
    * @Secure(roles="ROLE_ADMIN")
 */
 public function supprimercategoriesAction($id)  // Supprime toutes les catégories d'un produit
   {
     // On récupère l'EntityManager
-    $em = $this->getDoctrine()
-               ->getManager();
+    $em = $this->getDoctrine()->getManager();
  
     // On récupère l'entité correspondant à l'id $id
-    $produit = $em->getRepository('PwebMainBundle:Produit')
-                  ->find($id);
+    $produit = $em->getRepository('PwebMainBundle:Produit')->find($id);
  
     if ($produit === null) {
       throw $this->createNotFoundException('Produit[id='.$id.'] inexistant.');
@@ -321,17 +324,11 @@ public function supprimercategoriesAction($id)  // Supprime toutes les catégori
       $produit->removeCategorie($categorie);
     }
  
-    // On n'a pas modifié les catégories : inutile de les persister
-     
-    // On a modifié la relation Produit - Categorie
-    // Il faudrait persister l'entité propriétaire pour persister la relation
-    // Or le produit a été récupéré depuis Doctrine, inutile de le persister
-   
-    // On déclenche la modification
     $em->flush();
  
     return $this->redirect($this->generateUrl('PwebMain_voir', array('id' => $id)));
   }
+  
 /**
    * @Secure(roles="ROLE_ADMIN")
 */
@@ -344,24 +341,100 @@ $liste_cat = $this->getDoctrine()
     return $this->render('PwebMainBundle:Main:categoriesgerer.html.twig', array(
       'liste_categories' => $liste_cat));
   }
+  
+# ------------------------------------------------------------------------------
+# ADMINISTRATEUR. COMMANDE : AJOUTER, SUPPRIMER, MODIFIER
+  
+    /**
+    * @Secure(roles="ROLE_ADMIN")
+    */
+      public function commandesupprimerAction($id)
+  {
+    // On récupère l'EntityManager
+    $em = $this->getDoctrine()->getManager();
+
+    // On récupère l'entité correspondant à l'id $id
+    $commande = $em->getRepository('PwebMainBundle:Commande')->find($id);
+
+    if ($commande === null) {
+      throw $this->createNotFoundException('Commande[id='.$id.'] inexistante.');
+    }
+
+   $commande->removeCommande($commande);        // Méthode à programmer dans l'Entité Commande (avec l'aide de removeCategorie dans l'entitée Categorie)
+   
+   $em->flush();
+
+   // Récupération de la liste complète des commandes
+    $repository = $this->getDoctrine()->getManager()->getRepository('PwebMainBundle:Commande');
+    $liste_commandes = $repository->findAll();
+   
+    return $this->redirect($this->generateUrl('PwebMain_statut', array('liste_commandes' => $liste_commandes)));
+  }
+  
+      /**
+   * @Secure(roles="ROLE_ADMIN")
+*/
+      public function commandetoutsupprimerAction()
+  {
+// On récupère l'EntityManager
+    $em = $this->getDoctrine()->getManager();
+    
+// Récupération de la liste complète des commandes
+    $repository = $this->getDoctrine()->getManager()->getRepository('PwebMainBundle:Commande');
+    $liste_commandes = $repository->findAll();
+     
+// On enlève toutes ces commande de le produit
+    foreach($liste_commandes as $commande)
+    {
+      $commande->removeCommande($commande);
+    }
+ 
+   $em->flush();
+    
+    return $this->redirect($this->generateUrl('PwebMain_statut'));
+  }
+  
 /**
    * @Secure(roles="ROLE_ADMIN")
 */
   public function statutAction()
   {
-$nombre_comm=100;
-$liste_comm = $this->getDoctrine()
-  ->getManager()
-  ->getRepository('PwebMainBundle:Commande')
-  ->findBy(
-    array(),          // Pas de critère
-    array('id' => 'asc'), // On trie par date décroissante
-    $nombre_comm,         // On sélectionne $nombre produits
-    0                // À partir du premier
-  );
-    return $this->render('PwebMainBundle:Main:statut.html.twig', array(
-      'liste_commandes' => $liste_comm));
+      $em = $this->getDoctrine()->getManager();
+      
+// On récupère les articleCompetence pour l'article $article
+    $liste_commande = $this->getDoctrine()->getManager()->getRepository('PwebMainBundle:Commande')->findAll();
+    
+    $liste_CommandeProduit = $em->getRepository('PwebMainBundle:CommandeProduit')->findAll();
+    
+    return $this->render('PwebMainBundle:Main:statut.html.twig', 
+            array('liste_CommandeProduit' => $liste_CommandeProduit,'liste_commandes' => $liste_commande));
   }
+  
+  /**
+   * @Secure(roles="ROLE_ADMIN")
+*/
+  public function commandevoirproduitsAction($idcommande)
+  {
+    // On récupère l'EntityManager
+    $em = $this->getDoctrine()->getManager();
+ 
+    // On récupère l'entité correspondant à l'id $id
+    $commande = $em->getRepository('PwebMainBundle:Commande')->find($idcommande);
+ 
+    if ($commande === null) {
+      throw $this->createNotFoundException('commande[id='.$idcommande.'] inexistante.');
+    }
+ 
+    // On récupère les articleCompetence pour l'article $article
+    $liste_CommandeProduit = $em->getRepository('PwebMainBundle:CommandeProduit')->findByCommande($idcommande);
+    
+    return $this->render('PwebMainBundle:Main:commandevoirproduits.html.twig', 
+            array('liste_CommandeProduit' => $liste_CommandeProduit)
+            );
+  }
+  
+  
+  
 
 # ------------------------------------------------------------------------------
 # ESPACE CLIENT, PANIER, VALIDATION
@@ -429,48 +502,47 @@ $liste_comm = $this->getDoctrine()
       $em->persist($commande1);
       $em->flush();
       
-  $liste_commande = $this->getDoctrine()
-  ->getManager()
-  ->getRepository('PwebMainBundle:Commande')
-  ->findAll();
+      $liste_commande = $this->getDoctrine()->getManager()->getRepository('PwebMainBundle:Commande')->findAll();
+  
     return $this->render('PwebMainBundle:Main:panier.html.twig', array('liste_commande' => $liste_commande));
   }
   
-  public function ajouterproduitaupanierAction($idproduit)
+  public function commandeajouterAction($id)
   {
-// On récupère le respository de Produit
-    $respository1=$this->getDoctrine()->getManager()->getRepository('PwebMainBundle:Produit');
-
-// A LA PLACE DE CREER UN NOUVEAU PANIER (chose faite quand l'utilisateur s'inscrit), IL FAUT
-// RECUPERER LE PANIER DE L'UTILISATEUR ACTUEL.
-    $panier=new Panier();
-    $panier->setIdproduit($idproduit);
-    $panier->setIdcommande('8');
-    
-// On trouve l'objet produit avec le bon id
-    $produit=$respository1->find($idproduit);
-    if($produit === null) {      throw $this->createNotFoundException('Produit[id='.$idproduit.'] inexistant.');    }
-
-// Mise à jours des données
+    // On récupére l'EntityManager
     $em = $this->getDoctrine()->getManager();
-    $em->persist($panier);
+    $produit = $em->getRepository('PwebMainBundle:Produit')->find($id);
+ 
+    // Dans ce cas, on doit créer effectivement l'article en bdd pour lui assigner un id
+    // On doit faire cela pour pouvoir enregistrer les ArticleCompetence par la suite
+    $em->persist($produit);
+    $em->flush(); // Maintenant, $produit a un id défini
+ 
+    // Les commandes existent déjà, on les récupère depuis la bdd
+    $liste_commandes = $em->getRepository('PwebMainBundle:Commande')->findAll(); // Pour l'exemple, notre Article contient toutes les Competences
+ 
+    // Pour chaque commande
+    foreach($liste_commandes as $i => $commande)
+    {
+      // On crée une nouvelle « relation entre 1 article et 1 compétence »
+      $produitCommande[$i] = new CommandeProduit;
+ 
+      // On la lie à l'article, qui est ici toujours le même
+      $produitCommande[$i]->setProduit($produit);
+      // On la lie à la compétence, qui change ici dans la boucle foreach
+      $produitCommande[$i]->setCommande($commande);
+ 
+      // On fixe la quantité de ce produit.
+      $produitCommande[$i]->setQuantite('3');
+ 
+      // Et bien sûr, on persiste cette entité de relation, propriétaire des deux autres relations
+      $em->persist($produitCommande[$i]);
+    }
+ 
+    // On déclenche l'enregistrement
     $em->flush();
-
-// On récupère la liste des Produits UNIQUEMENT dans le Panier
-    //$liste_produits = $this->getDoctrine()->getManager()->getRepository('PwebMainBundle:Produit')->findAll();
-    $nombre_prod=10;
-        $liste_produits = $this->getDoctrine()
-                  ->getManager()
-                  ->getRepository('PwebMainBundle:Produit')
-                  ->findBy(
-                    array('idpanier' => '0'),          // Pas de critère
-                    array('id' => 'desc'), // On trie par date décroissante
-                    $nombre_prod,         // On sélectionne $nombre produits
-                    0                // À partir du premier
-                  );
     
-    
-    return $this->render('PwebMainBundle:Main:panier.html.twig', array('liste_produits' => $liste_produits));
+    return $this->render('PwebMainBundle:Main:statut.html.twig', array('liste_commandes' => $liste_commandes));
   }
   
   public function panierAction()
@@ -592,7 +664,7 @@ Fonction CI+
 Design Ultra Fin
 Fréquence de 200 Hz (MCI) ');
     //$produit6->setCategories('5');
-    $produit->setPrix('849.00');
+    $produit6->setPrix('849.00');
     $produit6->setPoids('21900');
     $produit6->setPhoto(str_replace('app_dev.php/','Produits/tv.jpg',$url));
     $produit6->setLien('http://www.lg.com/fr');
@@ -645,5 +717,33 @@ Dans la continuité de cette série de films, il s\'agit de leur première renco
     $em->flush();
     return $this->render('PwebMainBundle:Main:initialisecategories.html.twig');
   }
+  
+    public function initialisecommandesAction()
+  {
+// Insertion des valeurs
+    $em=$this->getDoctrine()->getManager();
+    
+    $commande1=new Commande();
+    $commande1->setStatut('validée');
+    $commande1->setIdacheteur('123456');
+    $commande1->setIdproduit('123456');
+    $em->persist($commande1);
+    
+    $em->flush();
+    
+// Récupération de la liste complète des commandes
+    $repository = $this->getDoctrine()->getManager()->getRepository('PwebMainBundle:Commande');
+    $liste_commandes = $repository->findAll();
 
+    return $this->render('PwebMainBundle:Main:statut.html.twig', array('liste_commandes' => $liste_commandes));
+  }
 }
+
+
+/*
+ * 
+ * // Générateur aléatoire (à utiliser pour les mot de passe)
+    $generator = new SecureRandom();
+    $random = $generator->nextBytes(20);
+ * 
+ */

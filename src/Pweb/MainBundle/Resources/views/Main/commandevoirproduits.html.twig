@@ -1,0 +1,107 @@
+{% extends "PwebMainBundle::layout.html.twig" %}
+ 
+{% block title %}
+  Commande n°
+{% endblock %}
+ 
+{% block PwebMain_body %}
+ 
+        <h2>Commande n°</h2>
+      <br></br>
+      
+{% if liste_CommandeProduit|length > 0 %}
+
+         <TABLE BORDER="0"> 
+          <TR> 
+         <TH>  </TH> 
+         <TH align="center"> Aperçu</TH> 
+         <TH align="center"> Nom</TH> 
+
+         <TH align="center"> Prix </TH> 
+         <TH align="center"> Frais de port</TH> 
+         <TH align="center"> Prix total</TH> 
+          </TR> 
+        <TR> 
+         <TH align="center"> Id</TH> 
+         <TD> </TD> 
+         <TD> </TD> 
+         <TD> </TD> 
+         <TD> </TD> 
+         <TD> </TD> 
+        </TR> 
+
+{% for CommandeProduit in liste_CommandeProduit %}
+
+            <TR> 
+         <TH> </TH> 
+         <TD> ---------- </TD> 
+         <TD>  </TD> 
+         <TD>  </TD> 
+         <TD> </TD> 
+         <TD> </TD> 
+        </TR> 
+
+            <TR>
+         <TH align="center"> {{ CommandeProduit.Produit.id }} </TH> 
+         <TH align="center"><a href="{{ path('PwebMain_voir', {'id': CommandeProduit.Produit.id}) }}"><img src="{{ CommandeProduit.Produit.photo }}" width="100" height="100" alt="Produit" align="center"/></a></TH> 
+         <TH align="center"> <a href="{{ path('PwebMain_voir', {'id': CommandeProduit.Produit.id}) }}"> {{ CommandeProduit.Produit.libelle }} </a></TH> 
+         <TD align="center"> <strong>{{ CommandeProduit.Produit.prix }} €</strong></TD> 
+         <TD align="center"> {{ CommandeProduit.Produit.poids*0.1 }} €</TD> 
+         <TD align="center"> <h3>{{ CommandeProduit.Produit.prix + 0.1*CommandeProduit.Produit.poids }} €</h3></TD> 
+            </TR> 
+
+{% else %}
+
+    <TD> Le panier est vide.</td>
+    <TD> Le panier est vide.</td>
+    <TD> Le panier est vide.</td>
+    <TD> Le panier est vide.</td>
+    <TD> Le panier est vide.</td>
+    <TD> Le panier est vide.</td>
+    
+{% endfor %}
+    </TABLE> 
+      
+    <br></br>
+          
+        <h3>Prix sans frais de port :</h3>
+      <br></br>
+   <div class="well">
+
+  </div>
+          
+      <h3>Prix total :</h3>
+      <br></br>
+   <div class="well">
+
+  </div>
+      
+      
+      
+      <h3>Coordonnées de l'acheteur qui a validé la commande :</h3>
+      <br></br>
+   <div class="well">
+      <p>Nom acheteur :</p>
+      <p>prenom acheteur :</p>
+      <p>adresse acheteur :</p>
+      <p>codepostal acheteur :</p>
+      <p>ville acheteur :</p>
+      <p>email acheteur :</p>
+      <p>telephone acheteur :</p>
+      <p>login acheteur :</p>
+      <p>password acheteur :</p>
+  </div>
+    
+{% else %}
+      <p>Cette commande ne contient aucun produit.</p>
+
+{% endif %}
+      
+      <br></br>
+        <center>
+        <a href="{{ path('PwebMain_statut') }}" class="btn btn-info btn-large"><i class="icon-white icon-home"></i> Retour à la liste des commandes</a>
+        <a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i> Accueil</a>
+        </center>
+      
+{% endblock %}
+

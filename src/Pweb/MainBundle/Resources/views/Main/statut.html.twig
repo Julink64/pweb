@@ -8,6 +8,7 @@
  
   <h2>Gérer les commandes et les statuts</h2>
 <br></br>
+
     <TABLE BORDER="0"> 
   <TR> 
  <TH>  </TH> 
@@ -29,11 +30,11 @@
     <TR> 
  <TH> {{ commande.id }} </TH> 
  <TD align="center"> {{ commande.idacheteur }} </TD> 
- <TD align="center"> <a href="#" class="btn btn-inverse btn-small"><i class="icon-white icon-shopping-cart"></i> Panier</a> </TD> 
+ <TD align="center"> <a href="{{ path('PwebMain_commandevoirproduits', {'idcommande': commande.id}) }}" class="btn btn-inverse btn-small"><i class="icon-white icon-shopping-cart"></i> Panier</a> </TD> 
  <TD align="center"><a href="#" class="btn btn-info btn-small"><i class="icon-white icon-ok"></i> Validée</a></TD> 
  <TD align="center"><a href="#" class="btn btn-success btn-small"><i class="icon-white icon-road"></i> Envoyée</a></TD> 
  <TD align="center"> {{ commande.statut }} </TD> 
- <TD align="center"> <a href="#" class="btn btn-danger btn-small"><i class="icon-white icon-warning-sign"></i> Supprimer</a></TD> 
+ <TD align="center"> <a href="{{ path('PwebMain_commandesupprimer', {'id': commande.id}) }}" class="btn btn-danger btn-small"><i class="icon-white icon-warning-sign"></i> Supprimer</a></TD> 
  
     </TR> 
   {% endfor %}
@@ -42,8 +43,12 @@
 
 <br></br>
   <center>
-  <a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i> Retour à l'accueil</a>
-  <a href="#" class="btn btn-success btn-large"><i class="icon-white icon-plus"></i> Ajouter des commandes de test</a>
-  <a href="{{ path('PwebMain_initialiseclear') }}" class="btn btn-danger btn-large"><i class="icon-white icon-flag"></i> Tout Supprimer</a>
+  <a href="{{ path('PwebMain_initialisecommandes') }}" class="btn btn-success btn-large"><i class="icon-white icon-plus"></i> Ajouter une commande par défaut</a>
+  <a href="{{ path('PwebMain_commandetoutsupprimer') }}" class="btn btn-danger btn-large"><i class="icon-white icon-flag"></i> Supprimer toutes les commandes</a>
+<br></br>
+    <a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i> Retour à l'accueil</a>
   </center>
+
+
 {% endblock %}
+

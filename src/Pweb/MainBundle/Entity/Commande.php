@@ -31,9 +31,9 @@ class Commande
     /**
      * @var integer
      *
-     * @ORM\Column(name="idpanier", type="integer")
+     * @ORM\Column(name="idproduit", type="integer")
      */
-    private $idpanier;
+    private $idproduit;
 
     /**
      * @var integer
@@ -77,26 +77,26 @@ class Commande
     }
 
     /**
-     * Set idpanier
+     * Set idproduit
      *
-     * @param integer $idpanier
+     * @param integer $idproduit
      * @return Commande
      */
-    public function setIdpanier($idpanier)
+    public function setIdproduit($idproduit)
     {
-        $this->idpanier = $idpanier;
+        $this->idproduit = $idproduit;
 
         return $this;
     }
 
     /**
-     * Get idpanier
+     * Get idproduit
      *
      * @return integer 
      */
-    public function getIdpanier()
+    public function getIdproduit()
     {
-        return $this->idpanier;
+        return $this->idproduit;
     }
 
     /**

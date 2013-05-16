@@ -69,33 +69,6 @@ class Produit
      */
     private $lien;
 
-    /**
-   * @ORM\ManyToOne(targetEntity="Pweb\MainBundle\Entity\Panier", cascade={"all"})
-   *    * @ORM\JoinColumn(name="panier_id", referencedColumnName="id", onDelete="SET NULL")
-   */
-  private $idpanier;
-  
-
-  /**
-   * Set panier
-   *
-   * @param Pweb\MainBundle\Entity\Panier $panier
-   */
-  public function setPanier(Pweb\MainBundle\Entity\Produit $idpanier)
-  {
-    $this->panier = $idpanier;
-  }
- 
-  /**
-   * Get panier
-   *
-   * @return Pweb\MainBundle\Entity\Panier 
-   */
-  public function getPanier()
-  {
-    return $this->idpanier;
-  }
-
 
     /**
      * Get id
@@ -257,10 +230,9 @@ class Produit
      * Add categories
      *
      * @param \Pweb\MainBundle\Entity\Categorie $categories
-     * @return Produit
      */
-    public function addCategorie(\Pweb\MainBundle\Entity\Categorie $categorie)
-    {
+    public function addCategorie(\Pweb\MainBundle\Entity\Categorie $categorie) // addCategorie sans « s » !
+    {    // Ici, on utilise l'ArrayCollection vraiment comme un tableau, avec la syntaxe []
         $this->categories[] = $categorie;
 
         return $this;
@@ -271,8 +243,9 @@ class Produit
      *
      * @param \Pweb\MainBundle\Entity\Categorie $categories
      */
-    public function removeCategorie(\Pweb\MainBundle\Entity\Categorie $categorie)
+    public function removeCategorie(\Pweb\MainBundle\Entity\Categorie $categorie) // removeCategorie sans « s » !
     {
+    // Ici on utilise une méthode de l'ArrayCollection, pour supprimer la catégorie en argument
         $this->categories->removeElement($categorie);
     }
 
