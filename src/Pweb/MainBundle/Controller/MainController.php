@@ -3,6 +3,7 @@ namespace Pweb\MainBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Pweb\MainBundle\Entity\Produit;
+use Pweb\MainBundle\Entity\Acheteur;
 use Pweb\MainBundle\Entity\Categorie;
 use Pweb\MainBundle\Entity\Commande;
 use Pweb\MainBundle\Entity\CommandeProduit;
@@ -420,16 +421,22 @@ $liste_cat = $this->getDoctrine()
  
     // On récupère l'entité correspondant à l'id $id
     $commande = $em->getRepository('PwebMainBundle:Commande')->find($idcommande);
+    $acheteur = $em->getRepository('PwebMainBundle:Commande')->find($idacheteur);
  
     if ($commande === null) {
       throw $this->createNotFoundException('commande[id='.$idcommande.'] inexistante.');
     }
+    
+    if ($acheteur === null) {
+      throw $this->createNotFoundException('commande[id='.$idacheteur.'] inexistante.');
+    }
  
     // On récupère les articleCompetence pour l'article $article
     $liste_CommandeProduit = $em->getRepository('PwebMainBundle:CommandeProduit')->findByCommande($idcommande);
+    $liste_CommandeAcheteur = $em->getRepository('PwebMainBundle:CommandeProduit')->findByCommande($idacheteur);
     
     return $this->render('PwebMainBundle:Main:commandevoirproduits.html.twig', 
-            array('liste_CommandeProduit' => $liste_CommandeProduit)
+            array('liste_CommandeProduit' => $liste_CommandeProduit,'liste_CommandeAcheteur' => $liste_CommandeAcheteur)
             );
   }
   
@@ -485,6 +492,36 @@ $liste_cat = $this->getDoctrine()
     $url = $this->generateUrl('PwebMain_accueil');
     $option = 'profile';
     return $this->redirect($url.$option);
+  }
+  
+  public function ajouterproduitaupanierAction($id)
+  {
+      $em=$this->getDoctrine()->getManager();
+      $produit = $em->getRepository('PwebMainBundle:Produit')->find($id);
+          if($produit === null) {      throw $this->createNotFoundException('Produit[id='.$id.'] inexistant.');    }
+        
+      $user = $this->container->get('security.context')->getToken()->getUser();
+        
+      $acheteur = $em->getRepository('PwebUserBundle:User')->find($user);
+          if($acheteur === null) {      throw $this->createNotFoundException('Acheteur[nom='.$user.'] inexistant.');    }
+
+      $commande1=new Commande();
+      $commande1->setStatut('validé');
+      $commande1->setIdProduit($produit->getId());
+      $commande1->setIdAcheteur($acheteur->getId());
+      $produitcommande1=new CommandeProduit();
+      $produitcommande1->setCommande(2);
+      $produitcommande1->setProduit($produit->getId());
+      $produitcommande1->setQuantité(1);
+      $em->persist($commande1);
+      $em->persist($produitcommande1);
+      $em->flush();
+      
+      $liste_commande = $this->getDoctrine()->getManager()->getRepository('PwebMainBundle:Commande')->findAll();
+      $liste_produits = $this->getDoctrine()->getManager()->getRepository('PwebMainBundle:CommandeProduit')->findByCommande($commande1);
+      //$liste_produits = $this->getDoctrine()->getManager()->getRepository('PwebMainBundle:Produit')->findbyUser();
+  
+    return $this->render('PwebMainBundle:Main:panier.html.twig', array('liste_commande' => $liste_commande, 'liste_produits' => $liste_produits));
   }
   
   public function ajouterpanierAction($id)
@@ -553,6 +590,61 @@ $liste_cat = $this->getDoctrine()
     return $this->render('PwebMainBundle:Main:panier.html.twig', array(
       'liste_produits' => $liste_produits));
   }
+  
+ public function coordonneesAction()
+  {
+	$acheteur = new Acheteur();
+	// On crée le FormBuilder grâce à la méthode du contrôleur
+	$formBuilder = $this->createFormBuilder($acheteur);
+	$formBuilder
+		
+		->add('nom',		'text')
+		->add('prenom',		'text')
+		->add('adresse',            'text')
+		->add('codepostal',			'text')
+		->add('ville',			'text')
+		->add('email',			'text')
+		->add('telephone',			'text')
+		->add('login',			'text')
+		->add('password',			'text')
+		;
+	// Pour l'instant, pas de commentaires, catégories, etc., on les gérera plus tard
+	// À partir du formBuilder, on génère le formulaire
+	$form = $formBuilder->getForm();
+	
+	// On récupère la requête
+	$request = $this->get('request');
+	
+	// On vérifie qu'elle est de type POST
+	if ($request->getMethod() == 'POST') {
+	
+		// On fait le lien Requête <-> Formulaire
+		// A partir de maintenant, la variable $acheteur contient les valeurs entrées dans le formulaire par le visiteur
+		$form->bind($request);
+		
+		// On vérifie que les valeurs rentrées sont correctes
+		// (Nous verrons la validation des objets en détail dans le prochain chapitre)
+		if ($form->isValid()) {
+		
+			// On l'enregistre notre objet $produit dans la base de données
+			$em = $this->getDoctrine()->getManager(); 
+			$em->persist($acheteur);
+			$em->flush();
+			
+			// On redirige vers la page de visualisation de le produit nouvellement créé
+			return $this->redirect($this->generateUrl('PwebMain_espaceclient', array('id' => $acheteur->getId())));
+			
+		} 
+	}
+	// Reste de la méthode qu'on avait déjà écrit
+    if ($this->getRequest()->getMethod() == 'POST') {
+      $this->get('session')->getFlashBag()->add('info', 'Coordonnées bien enregistrées');
+      return $this->redirect( $this->generateUrl('PwebMain_espaceclient', array('id' => $acheteur->getId())) );
+    }
+
+    return $this->render('PwebMainBundle:Main:coordonnees.html.twig', array(
+'form' => $form->createView(), ));
+}
   
 # ------------------------------------------------------------------------------
 # INITIALISER

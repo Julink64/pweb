@@ -76,21 +76,22 @@
 
   </div>
       
-      
+   {% for Acheteur in liste_CommandeAcheteur %}   
       
       <h3>Coordonnées de l'acheteur qui a validé la commande :</h3>
       <br></br>
    <div class="well">
-      <p>Nom acheteur :</p>
-      <p>prenom acheteur :</p>
-      <p>adresse acheteur :</p>
-      <p>codepostal acheteur :</p>
-      <p>ville acheteur :</p>
-      <p>email acheteur :</p>
-      <p>telephone acheteur :</p>
-      <p>login acheteur :</p>
-      <p>password acheteur :</p>
+      <p>Nom acheteur : {{ Acheteur.nom }}</p>
+      <p>prenom acheteur : {{ Acheteur.prenom }}</p>
+      <p>adresse acheteur : {{ Acheteur.adresse }}</p>
+      <p>codepostal acheteur : {{ Acheteur.codePostal }}</p>
+      <p>ville acheteur : {{ Acheteur.ville }}</p>
+      <p>email acheteur : {{ Acheteur.email }}</p>
+      <p>telephone acheteur : {{ Acheteur.telephone }}</p>
+      <p>login acheteur : {{ Acheteur.login }}</p>
+      <p>password acheteur : {{ Acheteur.password }}</p>
   </div>
+  {% endfor %}
     
 {% else %}
       <p>Cette commande ne contient aucun produit.</p>

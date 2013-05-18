@@ -1,0 +1,23 @@
+  {# src/Pweb/MainBundle/Resources/views/Main/ajouter.html.twig #}
+ 
+{% extends "PwebMainBundle::layout.html.twig" %}
+ 
+{% block title %}
+  Ajouter mes coordonnées
+{% endblock %}
+
+{% block PwebMain_body %}
+ 
+  <h2>Ajouter un produit</h2>
+ 
+  {% include "PwebMainBundle:Main:formulaire.html.twig" %}
+ 
+  <p>
+     Attention : ces informations ne pourront plus être modifiées par la suite.
+  </p>
+ 
+  <p>
+<a href="{{ path('PwebMain_accueil') }}" class="btn btn-inverse btn-large"><i class="icon-white icon-home"></i> Retour à l'accueil</a>
+  </p>
+ 
+{% endblock %}

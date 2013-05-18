@@ -103,14 +103,19 @@ PwebMain_enregistrer:
 PwebMain_profileuser:
     path:      /profileuser
     defaults:  { _controller: PwebMainBundle:Main:profileuser }
+    
+PwebMain_coordonnees:
+    path:      /coordonnees
+    defaults:  { _controller: PwebMainBundle:Main:coordonnees}
 
 PwebMain_panier:
     path:      /panier
     defaults:  { _controller: PwebMainBundle:Main:panier }
 
 PwebMain_ajouterpanier:
-    path:      /panier/ajouter/{idproduit}
+    path:      /panier/ajouter/{id}
     defaults:  { _controller: PwebMainBundle:Main:ajouterproduitaupanier }
+    
 
 # ------------------------------------------------------------------------------
 # INITIALISER
